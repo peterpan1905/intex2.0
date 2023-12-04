@@ -1,4 +1,4 @@
-// Author: Pierce Walker, Nathan Moore, Traedon Overly, Patrick Petty
+// Author: Pierce Walker, Nathan Moore, Traeden Overly, Patrick Petty
 const express = require("express");
 
 let app = EXPRESS();
