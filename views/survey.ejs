@@ -94,6 +94,120 @@
     </div>
   </header><!-- End Header -->
 
+  <!-- ======= Survey Form ====== -->
+  <form action="/addRecord" method="post">
+    <label for="age">1. Enter your age: </label><br>
+    <input type="text" id="age" name="age">
+    <br><br>
+    <label for="gender">2. Enter your gender: </label><br>
+    <select id="gender" name="gender">
+      <option selected disabled value=""></option>
+      <option value="1">Male</option>
+      <option value="2">Female</option>
+      <option value="3">Transgender</option>
+      <option value="4">Non-Binary</option>
+      <option value="5">Other</option>
+    </select>
+    <br><br>
+    <label for="relationshipStatus">3. Enter your relationship status: </label><br>
+    <select id="relationshipStatus" name="relationshipStatus">
+      <option selected disabled value=""></option>
+      <option value="1">In a relationship</option>
+      <option value="2">Single</option>
+      <option value="3">Married</option>
+      <option value="4">Divorced</option>
+    </select>
+    <br><br>
+    <label for="occupation">4. Enter your occupation status: </label><br>
+    <select id="occupation" name="occupation">
+      <option selected disabled value=""></option>
+      <option value="1">Student</option>
+      <option value="2">Full Time Employee</option>
+      <option value="3">Part Time Employee</option>
+      <option value="4">Unemployeed</option>
+      <option value="5">Retired</option>
+    </select>
+    <br><br>
+    <label for="organizationType">5. What type of organizations are you affiliated with? </label><br>
+    <select id="organizationType" name="organizationType">
+      <option selected disabled value=""></option>
+      <option value="1">School</option>
+      <option value="2">University</option>
+      <option value="3">Company</option>
+      <option value="4">Government</option>
+      <option value="5">N/A</option>
+    </select>
+    <br><br>
+    <label>6. Do you use social media?</label><br>
+      <input type="radio" id="socialMediaUserYes" value="yes" name="socialMediaUser">
+      <label for="socialMediaUserYes">Yes</label>
+      <input type="radio" id="socialMediaUserNo" value="no" name="socialMediaUser">
+      <label for="socialMediaUserNo">No</label>
+    <br><br>
+    <label>7. What social media platforms do you commonly use?</label><br>
+      <input type="checkbox" id="facebook" name="platformName">
+      <label for="facebook">Facebook</label><br>
+      <input type="checkbox" id="twitter" name="platformName">
+      <label for="twitter">Twitter</label><br>
+      <input type="checkbox" id="instagram" name="platformName">
+      <label for="instagram">Instagram</label><br>
+      <input type="checkbox" id="youtube" name="platformName">
+      <label for="youtube">Youtube</label><br>
+      <input type="checkbox" id="discord" name="platformName">
+      <label for="discord">Discord</label><br>
+      <input type="checkbox" id="reddit" name="platformName">
+      <label for="reddit">Reddit</label><br>
+      <input type="checkbox" id="pintrest" name="platformName">
+      <label for="pintrest">Pintrest</label><br>
+      <input type="checkbox" id="snapchat" name="platformName">
+      <label for="snapchat">Snapchat</label><br>
+      <input type="checkbox" id="discord" name="platformName">
+      <label for="discord">Discord</label><br>
+      <input type="checkbox" id="tiktok" name="platformName">
+      <label for="tiktok">TikTok</label><br>
+    <br><br>
+    <label for="hoursOnSocialMedia">8. What is the average time you spend on social media every day?</label>
+    <input type="text" id="hoursOnSocialMedia" name="hoursOnSocialMedia">
+    <br><br>
+    <label for="useSocialMediaNoPurpose">9. How often do you find yourself using social media without a specific purpose?</label>
+    <input type="text" id="useSocialMediaNoPurpose" name="useSocialMediaNoPurpose">
+    <br><br>
+    <label for="distractedBySocialMediaRating">10. How often do you get distracted by social media when you are busy doing something?</label>
+    <input type="text" id="distractedBySocialMediaRating" name="distractedBySocialMediaRating">
+    <br><br>
+    <label for="restlessWhenNotUsingSocialMediaRating">11. Do you feel restless if you haven’t used social media in a while?</label>
+    <input type="text" id="restlessWhenNotUsingSocialMediaRating" name="restlessWhenNotUsingSocialMediaRating">
+    <br><br>
+    <label for="easilyDistractedGeneralRating">12. How easily distracted are you?</label>
+    <input type="text" id="easilyDistractedGeneralRating" name="easilyDistractedGeneralRating">
+    <br><br>
+    <label for="botheredByWorriesGeneralRating">13. How much are you bothered by worries?</label>
+    <input type="text" id="botheredByWorriesGeneralRating" name="botheredByWorriesGeneralRating">
+    <br><br>
+    <label for="concentrationGeneralRating">14. Do you find it difficult to concentrate on things?</label>
+    <input type="text" id="concentrationGeneralRating" name="concentrationGeneralRating">
+    <br><br>
+    <label for="compareToOthersRating">15. How often do you compare yourself to other successful people through the use of social media?</label>
+    <input type="text" id="compareToOthersRating" name="compareToOthersRating">
+    <br><br>
+    <label for="howComparissonFeelsRating">16. Following the previous question, how do you feel about these comparisons, generally speaking?</label>
+    <input type="text" id="howComparissonFeelsRating" name="howComparissonFeelsRating">
+    <br><br>
+    <label for="seekValidationRating">17. How often do you look to seek validation from features of social media?</label>
+    <input type="text" id="seekValidationRating" name="seekValidationRating">
+    <br><br>
+    <label for="depressionGeneralRating">18. How often do you feel depressed or down?</label>
+    <input type="text" id="depressionGeneralRating" name="depressionGeneralRating">
+    <br><br>
+    <label for="interestFluctuateRating">19. How frequently does your interested in daily activities fluctuate?</label>
+    <input type="text" id="interestFluctuateRating" name="interestFluctuateRating">
+    <br><br>
+    <label for="generalSleepRating">20. How often do you face issues regarding sleep?</label>
+    <input type="text" id="generalSleepRating" name="generalSleepRating">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
     <div class="container" data-aos="zoom-out" data-aos-delay="100">

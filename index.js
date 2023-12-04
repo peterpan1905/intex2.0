@@ -51,8 +51,28 @@ app.post("/login", (req,res) => {
     res.send("");
 });
 
-app.post("/socialMedia", (req, res) => {
-    res.sendFile(path.join(__dirname + '/test.html'));
+app.post("/addRecord", (req, res) => {
+    for (count = 0; count<)
+    res.send(req.body.age);
+    res.send(req.body.gender);
+    res.send(req.body.relationshipStatus);
+    res.send(req.body.occupation);
+    res.send(req.body.organizationType);
+    res.send(req.body.socialMediaUser);
+    res.send(req.body.platformName);
+    res.send(req.body.hoursOnSocialMedia);
+    res.send(req.body.useSocialMediaNoPurpose);
+    res.send(req.body.distractedBySocialMediaRating);
+    res.send(req.body.restlessWhenNotUsingSocialMediaRating);
+    res.send(req.body.easilyDistractedGeneralRating);
+    res.send(req.body.botheredByWorriesGeneralRating);
+    res.send(req.body.concentrationGeneralRating);
+    res.send(req.body.compareToOthersRating);
+    res.send(req.body.howComparissonFeelsRating);
+    res.send(req.body.seekValidationRating);
+    res.send(req.body.depressionGeneralRating);
+    res.send(req.body.interestFluctuateRating);
+    res.send(req.body.generalSleepRating);
 });
 
 app.post("/report", (req, res) => {
