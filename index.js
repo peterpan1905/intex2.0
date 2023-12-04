@@ -23,7 +23,19 @@ const knex = require("knex")({
 }); 
 
 app.get("/", (req, res) => {
-    res.send("");
+    res.render("landingPage");
+});
+
+app.get("/login", (req,res) => {
+    res.render("login");
+});
+
+app.get("/socialMedia", (req, res) => {
+    res.render("socialMedia");
+});
+
+app.get("/report", (req, res) => {
+    res.render("report");
 });
 
 app.post("/login", (req,res) => {
