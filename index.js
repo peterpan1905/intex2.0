@@ -27,16 +27,24 @@ app.get("/", (req, res) => {
     res.render("landingPage");
 });
 
+app.get("/landingPage", (req, res) => {
+    res.render("landingPage");
+});
+
 app.get("/login", (req,res) => {
     res.render("login");
+});
+
+app.get("/info", (req,res) => {
+    res.render("info");
 });
 
 app.get("/socialMedia", (req, res) => {
     res.render("socialMedia");
 });
 
-app.get("/report", (req, res) => {
-    res.render("report");
+app.get("/dashboard", (req, res) => {
+    res.render("dashboard");
 });
 
 app.post("/login", (req,res) => {
