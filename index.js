@@ -1,4 +1,4 @@
-// Author: Pierce Walker, Nathan Moore, Traeden Overly, Patrick Petty
+// Authors: Pierce Walker, Nathan Moore, Traeden Overly, Patrick Petty
 const express = require("express");
 
 let app = express();
@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
+app.use(express.static(path.join(__dirname, 'public')));
 
 const knex = require("knex")({
     client: "pg",
