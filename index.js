@@ -5,9 +5,22 @@ let app = express();
 
 let path = require("path");  
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
+app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
+
+const knex = require("knex")({
+    client: "pg",
+    connection: {
+        host : process.env.RDS_HOSTNAME || "localhost",
+        user : process.env.RDS_USERNAME || "postgres",
+        password : process.env.RDS_PASSWORD || "buddy",
+        database : process.env.RDS_DB_NAME || "music",
+        port : process.env.RDS_PORT || 5433,
+        ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
+    }
+}); 
 
 app.get("/", (req, res) => {
     res.send("");
