@@ -86,7 +86,7 @@ app.post("/login", async (req, res) => {
     if (user && password === user.password) {
         // If the credentials are valid, generate a token
         const token = jwt.sign({ username: username }, secretKey, { expiresIn: "1h" });
-        res.json({ token: token });
+        res.render("data");
     } else {
         res.status(401).json({ message: "Invalid credentials" });
     }
