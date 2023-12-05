@@ -12,7 +12,15 @@
      <thead style="background-color: cornflowerblue; color: white;">
        <tr>
          <th style="text-align: left;">survey_number</th>
+         <th style="text-align: left;">Time Stamp</th>
+         <th style="text-align: left;">Location</th>
+         <th style="text-align: left;">Age</th>
+         <th style="text-align: left;">Gender</th>
+         <th style="text-align: left;">Relationship Status</th>
+         <th style="text-align: left;">Occupation Status</th>
+         <th style="text-align: left;">Associated Organizations</th>
          <th style="text-align: left;">media_user</th>
+         <th style="text-align: left;">platform_name</th>
          <th style="text-align: left;">hours_on_media</th>
          <th style="text-align: left;">use_media_no_purpose</th>
          <th style="text-align: left;">distracted_by_media</th>
@@ -33,8 +41,17 @@
      <tbody style="font-family: Arial; font-size: 9pt;">
       <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
          <tr>
+           
            <td><%= mysurvey[iCount].survey_number %></td>
+           <td><%= mysurvey[iCount].timestamp %></td>
+           <td><%= mysurvey[iCount].location %></td>
+           <td><%= mysurvey[iCount].age %></td>
+           <td><%= mysurvey[iCount].gender %></td>
+           <td><%= mysurvey[iCount].relationship_status %></td>
+           <td><%= mysurvey[iCount].occupation_status %></td>
+           <td><%= mysurvey[iCount].organization_type %></td>
            <td><%= mysurvey[iCount].media_user %></td>
+           <td><%= mysurvey[iCount].platform_name %></td>
            <td><%= mysurvey[iCount].hours_on_media %></td>
            <td><%= mysurvey[iCount].use_media_no_purpose %></td>
            <td><%= mysurvey[iCount].distracted_by_media %></td>
