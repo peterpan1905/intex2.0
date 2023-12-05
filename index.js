@@ -73,6 +73,8 @@ app.post("/login", (req,res) => {
 //     res.send(req.body.depressionGeneralRating);
 //     res.send(req.body.interestFluctuateRating);
 //     res.send(req.body.generalSleepRating);
+
+        res.send("Survey submitted successfully!")
 // });
 
 app.post("/report", (req, res) => {

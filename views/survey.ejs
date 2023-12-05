@@ -62,12 +62,17 @@
 
   <!-- ======= Survey Form ====== -->
   <form action="/addRecord" method="post">
-    <label for="age">1. Enter your age: </label><br>
-    <input type="text" id="age" name="age">
+    <label for="age">1. Select your age: </label><br>
+    <select id="age" name="age">
+      <option selected disabled></option>
+      <% for (let count = 0; count <= 100; count++) { %>
+        <option value="<%= count %>"><%= count %></option>
+      <% } %>
+    </select>
     <br><br>
-    <label for="gender">2. Enter your gender: </label><br>
+    <label for="gender">2. Select your gender: </label><br>
     <select id="gender" name="gender">
-      <option selected disabled value=""></option>
+      <option selected disabled></option>
       <option value="1">Male</option>
       <option value="2">Female</option>
       <option value="3">Transgender</option>
@@ -77,7 +82,7 @@
     <br><br>
     <label for="relationshipStatus">3. Enter your relationship status: </label><br>
     <select id="relationshipStatus" name="relationshipStatus">
-      <option selected disabled value=""></option>
+      <option selected></option>
       <option value="1">In a relationship</option>
       <option value="2">Single</option>
       <option value="3">Married</option>
@@ -86,7 +91,7 @@
     <br><br>
     <label for="occupation">4. Enter your occupation status: </label><br>
     <select id="occupation" name="occupation">
-      <option selected disabled value=""></option>
+      <option selected></option>
       <option value="1">Student</option>
       <option value="2">Full Time Employee</option>
       <option value="3">Part Time Employee</option>
@@ -96,7 +101,7 @@
     <br><br>
     <label for="organizationType">5. What type of organizations are you affiliated with? </label><br>
     <select id="organizationType" name="organizationType">
-      <option selected disabled value=""></option>
+      <option selected disabled></option>
       <option value="1">School</option>
       <option value="2">University</option>
       <option value="3">Company</option>
@@ -111,64 +116,110 @@
       <label for="socialMediaUserNo">No</label>
     <br><br>
     <label>7. What social media platforms do you commonly use?</label><br>
-      <input type="checkbox" id="facebook" name="platformName">
+      <input type="checkbox" id="facebook" name="platformName" value="1">
       <label for="facebook">Facebook</label><br>
-      <input type="checkbox" id="twitter" name="platformName">
+      <input type="checkbox" id="twitter" name="platformName" value="2">
       <label for="twitter">Twitter</label><br>
-      <input type="checkbox" id="instagram" name="platformName">
+      <input type="checkbox" id="instagram" name="platformName" value="3">
       <label for="instagram">Instagram</label><br>
-      <input type="checkbox" id="youtube" name="platformName">
-      <label for="youtube">Youtube</label><br>
-      <input type="checkbox" id="discord" name="platformName">
-      <label for="discord">Discord</label><br>
-      <input type="checkbox" id="reddit" name="platformName">
-      <label for="reddit">Reddit</label><br>
-      <input type="checkbox" id="pintrest" name="platformName">
-      <label for="pintrest">Pintrest</label><br>
-      <input type="checkbox" id="snapchat" name="platformName">
-      <label for="snapchat">Snapchat</label><br>
-      <input type="checkbox" id="discord" name="platformName">
-      <label for="discord">Discord</label><br>
-      <input type="checkbox" id="tiktok" name="platformName">
+      <input type="checkbox" id="tiktok" name="platformName" value="4">
       <label for="tiktok">TikTok</label><br>
+      <input type="checkbox" id="youtube" name="platformName" value="5">
+      <label for="youtube">Youtube</label><br>
+      <input type="checkbox" id="discord" name="platformName" value="6">
+      <label for="discord">Discord</label><br>
+      <input type="checkbox" id="reddit" name="platformName" value="7">
+      <label for="reddit">Reddit</label><br>
+      <input type="checkbox" id="pintrest" name="platformName" value="8">
+      <label for="pintrest">Pintrest</label><br>
+      <input type="checkbox" id="snapchat" name="platformName" value="9">
+      <label for="snapchat">Snapchat</label><br>
     <br><br>
-    <label for="hoursOnSocialMedia">8. What is the average time you spend on social media every day?</label>
-    <input type="text" id="hoursOnSocialMedia" name="hoursOnSocialMedia">
+    <label for="hoursOnSocialMedia">8. What is the average time you spend on social media every day?</label><br>
+    <select id="hoursOnSocialMedia" name="hoursOnSocialMedia">
+      <option selected disabled></option>
+      <option value="1">Less than an Hour</option>
+      <option value="2">1 - 2 hours</option>
+      <option value="3">2 - 3 hours</option>
+      <option value="4">3 - 4 hours</option>
+      <option value="5">4 - 5 hours</option>
+      <option value="6">5+ hours</option>
+    </select>
     <br><br>
-    <label for="useSocialMediaNoPurpose">9. How often do you find yourself using social media without a specific purpose?</label>
-    <input type="text" id="useSocialMediaNoPurpose" name="useSocialMediaNoPurpose">
+    <label>9. How often do you find yourself using social media without a specific purpose?</label><br>
+    <fieldset style="width: 400px;">
+      <div class="mx-0 mx-sm-auto text-center">
+        <div class="d-flex justify-content-between">
+          <div>Never</div>
+          <div>Often</div>
+        </div>
+        <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+          <div class="btn-group me-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-light">1</button>
+            <button type="button" class="btn btn-light">2</button>
+            <button type="button" class="btn btn-light">3</button>
+            <button type="button" class="btn btn-light">4</button>
+            <button type="button" class="btn btn-light">5</button>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    
+    <!-- <div class="radio-container">
+      <div class="radio-label">Never</div> -->
+      <!-- <div class="radio-label">Sometimes</div> -->
+      <!-- <div class="radio-label">Often</div>
+    </div>
+    <div class="radio-container">
+      <input type="radio" id="useSocialMediaNoPurpose1" value="1" name="useSocialMediaNoPurpose" class="radio-button">
+      <input type="radio" id="useSocialMediaNoPurpose2" value="2" name="useSocialMediaNoPurpose" class="radio-button">
+      <input type="radio" id="useSocialMediaNoPurpose3" value="3" name="useSocialMediaNoPurpose" class="radio-button">
+      <input type="radio" id="useSocialMediaNoPurpose4" value="4" name="useSocialMediaNoPurpose" class="radio-button">
+      <input type="radio" id="useSocialMediaNoPurpose5" value="5" name="useSocialMediaNoPurpose" class="radio-button">
+    </div> -->
+    <!-- <div class="radio-container">
+      <div class="radio-label">Never</div>
+      <div class="radio-button-container">
+        <input type="radio" id="useSocialMediaNoPurpose1" value="1" name="useSocialMediaNoPurpose" class="radio-button">
+        <input type="radio" id="useSocialMediaNoPurpose2" value="2" name="useSocialMediaNoPurpose" class="radio-button">
+        <input type="radio" id="useSocialMediaNoPurpose3" value="3" name="useSocialMediaNoPurpose" class="radio-button">
+        <input type="radio" id="useSocialMediaNoPurpose4" value="4" name="useSocialMediaNoPurpose" class="radio-button">
+        <input type="radio" id="useSocialMediaNoPurpose5" value="5" name="useSocialMediaNoPurpose" class="radio-button">
+      </div>
+      <div class="radio-label">Always</div>
+    </div> -->
     <br><br>
-    <label for="distractedBySocialMediaRating">10. How often do you get distracted by social media when you are busy doing something?</label>
+    <label for="distractedBySocialMediaRating">10. How often do you get distracted by social media when you are busy doing something?</label><br>
     <input type="text" id="distractedBySocialMediaRating" name="distractedBySocialMediaRating">
     <br><br>
-    <label for="restlessWhenNotUsingSocialMediaRating">11. Do you feel restless if you haven’t used social media in a while?</label>
+    <label for="restlessWhenNotUsingSocialMediaRating">11. Do you feel restless if you haven’t used social media in a while?</label><br>
     <input type="text" id="restlessWhenNotUsingSocialMediaRating" name="restlessWhenNotUsingSocialMediaRating">
     <br><br>
-    <label for="easilyDistractedGeneralRating">12. How easily distracted are you?</label>
+    <label for="easilyDistractedGeneralRating">12. How easily distracted are you?</label><br>
     <input type="text" id="easilyDistractedGeneralRating" name="easilyDistractedGeneralRating">
     <br><br>
-    <label for="botheredByWorriesGeneralRating">13. How much are you bothered by worries?</label>
+    <label for="botheredByWorriesGeneralRating">13. How much are you bothered by worries?</label><br>
     <input type="text" id="botheredByWorriesGeneralRating" name="botheredByWorriesGeneralRating">
     <br><br>
-    <label for="concentrationGeneralRating">14. Do you find it difficult to concentrate on things?</label>
+    <label for="concentrationGeneralRating">14. Do you find it difficult to concentrate on things?</label><br>
     <input type="text" id="concentrationGeneralRating" name="concentrationGeneralRating">
     <br><br>
-    <label for="compareToOthersRating">15. How often do you compare yourself to other successful people through the use of social media?</label>
+    <label for="compareToOthersRating">15. How often do you compare yourself to other successful people through the use of social media?</label><br>
     <input type="text" id="compareToOthersRating" name="compareToOthersRating">
     <br><br>
-    <label for="howComparissonFeelsRating">16. Following the previous question, how do you feel about these comparisons, generally speaking?</label>
+    <label for="howComparissonFeelsRating">16. Following the previous question, how do you feel about these comparisons, generally speaking?</label><br>
     <input type="text" id="howComparissonFeelsRating" name="howComparissonFeelsRating">
     <br><br>
-    <label for="seekValidationRating">17. How often do you look to seek validation from features of social media?</label>
+    <label for="seekValidationRating">17. How often do you look to seek validation from features of social media?</label><br>
     <input type="text" id="seekValidationRating" name="seekValidationRating">
     <br><br>
-    <label for="depressionGeneralRating">18. How often do you feel depressed or down?</label>
+    <label for="depressionGeneralRating">18. How often do you feel depressed or down?</label><br>
     <input type="text" id="depressionGeneralRating" name="depressionGeneralRating">
     <br><br>
-    <label for="interestFluctuateRating">19. How frequently does your interested in daily activities fluctuate?</label>
+    <label for="interestFluctuateRating">19. How frequently does your interested in daily activities fluctuate?</label><br>
     <input type="text" id="interestFluctuateRating" name="interestFluctuateRating">
     <br><br>
-    <label for="generalSleepRating">20. How often do you face issues regarding sleep?</label>
+    <label for="generalSleepRating">20. How often do you face issues regarding sleep?</label><br>
     <input type="text" id="generalSleepRating" name="generalSleepRating">
     <br><br>
     <input type="submit" value="Submit">
