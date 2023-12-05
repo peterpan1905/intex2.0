@@ -1813,23 +1813,38 @@ section {
 /*--------------------------------------------------------------
 # Survey
 --------------------------------------------------------------*/
-.radio-container {
+/* Custom styles for inline radio buttons */
+.inline-radio {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  max-width: 400px; /* Set the maximum width as needed */
+  margin: 0;  /* Reset margin */
+  padding: 10px;  /* Add padding */
+  align-items: flex-start; /* Align items to the start (left) */
+  position: relative; /* Position relative for absolute positioning */
 }
-
-.radio-label {
-  flex: 1;
-  text-align: center;
+.form-check-inline {
+  margin-right: 5px; /* Adjust as needed */
+  flex-grow: 1;
 }
-
-.radio-button-container {
-  flex: 4;
-  display: flex;
-  justify-content: space-between;
+/* Additional labels for Low and High */
+.label-low,
+.label-high {
+  position: absolute;
+  bottom: 40px; /* Adjust as needed for vertical positioning */
 }
-
-.radio-button {
-  margin: 0 5px;
+.label-low {
+  left: 5px;
+}
+.label-high {
+  right: 60px;
+}
+/* Adjustments for better mobile responsiveness */
+@media (max-width: 768px) {
+  .inline-radio {
+    max-width: 100%; /* Full width on smaller screens */
+  }
+  .label-low,
+  .label-high {
+    position: static; /* Reset position for smaller screens */
+  }
 }
