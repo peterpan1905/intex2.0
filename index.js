@@ -9,6 +9,7 @@ const secretKey = "ThisWillRemainASecret";
 let app = express();
 
 let path = require("path");  
+const { render } = require("ejs");
 
 const port = process.env.PORT || 3000;
 
@@ -90,7 +91,8 @@ app.post("/login", async (req, res) => {
     if (user && password === user.password) {
         // If the credentials are valid, generate a token
         const token = jwt.sign({ username: username }, secretKey, { expiresIn: "1h" });
-        res.render("data");
+        const loggedIn = true;
+        res.json({ token, loggedIn });
     } else {
         res.status(401).json({ message: "Invalid credentials" });
     }
