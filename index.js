@@ -39,8 +39,8 @@ app.get("/info", (req,res) => {
     res.render("info");
 });
 
-app.get("/socialMedia", (req, res) => {
-    res.render("socialMedia");
+app.get("/survey", (req, res) => {
+    res.render("survey");
 });
 
 app.get("/dashboard", (req, res) => {
@@ -52,7 +52,10 @@ app.post("/login", (req,res) => {
 });
 
 app.post("/addRecord", (req, res) => {
-    for (count = 0; count<)
+    let aSelectedPlatforms = req.body.platformName || [];
+    aSelectedPlatforms.forEach(platfrom => {
+
+    });
     res.send(req.body.age);
     res.send(req.body.gender);
     res.send(req.body.relationshipStatus);
@@ -73,6 +76,8 @@ app.post("/addRecord", (req, res) => {
     res.send(req.body.depressionGeneralRating);
     res.send(req.body.interestFluctuateRating);
     res.send(req.body.generalSleepRating);
+
+    res.send("Survey submitted successfully!")
 });
 
 app.post("/report", (req, res) => {
