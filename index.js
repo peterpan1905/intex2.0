@@ -41,7 +41,11 @@ const verifyToken = (req, res, next) => {
 };
 
 app.get("/data2", (req, res) => {
-    knex.select().from("survey").then( survey => {
+    knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
+    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
         res.render("data2", { mysurvey : survey});
     })
 })
