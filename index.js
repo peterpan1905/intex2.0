@@ -22,11 +22,17 @@ const knex = require("knex")({
         host : process.env.RDS_HOSTNAME || "localhost",
         user : process.env.RDS_USERNAME || "postgres",
         password : process.env.RDS_PASSWORD || "buddy",
-        database : process.env.RDS_DB_NAME || "music",
+        database : process.env.RDS_DB_NAME || "intex",
         port : process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
     }
 }); 
+
+app.get("/data2", (req, res) => {
+    knex.select().from("survey").then( survey => {
+        res.render("data2", { mysurvey : survey});
+    })
+})
 
 app.get("/", (req, res) => {
     res.render("landingPage");

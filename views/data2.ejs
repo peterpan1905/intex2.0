@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+<body>
+   <label><b>Information:</b></label>
+   <br><br>
+   <table style="width: 100%; background-color: antiquewhite; border: 1px solid black;">
+     <thead style="background-color: cornflowerblue; color: white;">
+       <tr>
+         <th style="text-align: left;">survey_number</th>
+         <th style="text-align: left;">media_user</th>
+         <th style="text-align: left;">hours_on_media</th>
+         <th style="text-align: left;">use_media_no_purpose</th>
+         <th style="text-align: left;">distracted_by_media</th>
+         <th style="text-align: left;">restless_not_using_media</th>
+         <th style="text-align: left;">easily_distracted</th>
+         <th style="text-align: left;">bothered_by_worries</th>
+         <th style="text-align: left;">concentration</th>
+         <th style="text-align: left;">compare_to_others</th>
+         <th style="text-align: left;">how_comparisson_feels</th>
+         <th style="text-align: left;">seek_validation</th>
+         <th style="text-align: left;">depression</th>
+         <th style="text-align: left;">interest_fluctuate</th>
+         <th style="text-align: left;">general_sleep</th>
+         <th></th>
+         <th></th>
+       </tr>
+     </thead>
+     <tbody style="font-family: Arial; font-size: 9pt;">
+      <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
+         <tr>
+           <td><%= mysurvey[iCount].survey_number %></td>
+           <td><%= mysurvey[iCount].media_user %></td>
+           <td><%= mysurvey[iCount].hours_on_media %></td>
+           <td><%= mysurvey[iCount].use_media_no_purpose %></td>
+           <td><%= mysurvey[iCount].distracted_by_media %></td>
+           <td><%= mysurvey[iCount].restless_not_using_media %></td>
+           <td><%= mysurvey[iCount].easily_distracted %></td>
+           <td><%= mysurvey[iCount].bothered_by_worries %></td>
+           <td><%= mysurvey[iCount].concentration %></td>
+           <td><%= mysurvey[iCount].compare_to_others %></td>
+           <td><%= mysurvey[iCount].how_comparisson_feels %></td>
+           <td><%= mysurvey[iCount].seek_validation %></td>
+           <td><%= mysurvey[iCount].depression %></td>
+           <td><%= mysurvey[iCount].interest_fluctuate %></td>
+           <td><%= mysurvey[iCount].general_sleep %></td>
+           <td>
+             <form action="/editSurvey/<%= mysurvey[iCount].survey_number %>" method="GET">
+               <button type="submit">Edit</button>
+             </form>
+           </td>
+           <td style="text-align: center;">
+             <form action="/deleteSurvey/<%= mysurvey[iCount].survey_number %>" method="POST">
+               <button type="submit">Delete</button>
+             </form>
+           </td>
+         </tr>
+      <% } %>
+     </tbody>
+   </table>
+   <br><br>
+   <form action="/addCountry" method="GET">
+     <button type="submit">Add Country</button>
+   </form>
+</body>
+</html>
