@@ -115,12 +115,25 @@ app.post("/addRecord", async (req, res) => {
     });
     const aSurveyNumbers = await knex("survey").select(knex.raw("max(survey_number) as max_survey_number"));
     const survey_number = aSurveyNumbers[0].max_survey_number
+    const currentTimestamp = new Date();
+    const targetTimezone = 'en-US';
+    const formattedTimestamp = currentTimestamp.toLocaleString(targetTimezone, {
+    timeZone: 'America/Denver', // Use 'America/Denver' for Mountain Time Zone
+    month: 'numeric',
+    day: '2-digit',
+    year: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    });
+
     await knex("user").insert({
-        survey_number: survey_number,
+        // survey_number: survey_number,
+        timestamp: currentTimestamp,
         age: req.body.age,
         gender: req.body.gender,
         relationship_status: req.body.relationshipStatus,
-        occupation: req.body.occupation,
+        occupation_status: req.body.occupation_status,
     });
     let aPlatformName = [req.body.platformName];
     aPlatformName.forEach(platform => {
@@ -140,6 +153,7 @@ app.post("/addRecord", async (req, res) => {
             });
         }
     });
+    res.render("survey")
 });
 
 app.post("/report", (req, res) => {
