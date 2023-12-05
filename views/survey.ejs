@@ -33,6 +33,28 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  <script>
+    // This script will be executed in the browser
+    // It shows an alert and resets the form on successful submission
+    const form = document.getElementById("surveyForm");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Perform the form submission using Fetch API or other methods if needed
+        const response = await fetch("/addRecord", {
+            method: "post",
+            body: new FormData(form),
+        });
+
+        if (response.ok) {
+            alert("Survey submitted successfully!");
+            form.reset(); // Reset the form
+        } else {
+            alert("Survey submission failed!");
+        }
+    });
+</script>
 </head>
 
 <body>
@@ -60,7 +82,7 @@
   </header><!-- End Header -->
 
   <!-- ======= Survey Form ====== -->
-  <form action="/addRecord" method="post">
+  <form action="/addRecord" method="post" id="surveyForm">
     <label for="age">1. Select your age: </label>
     <br>
     <select id="age" name="age">
