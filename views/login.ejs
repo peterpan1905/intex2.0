@@ -117,6 +117,13 @@
       </nav><!-- .navbar -->
 
     </div>
+    <% if (loggedIn) { %>
+        <script>
+          const token = '<%= token %>';
+          localStorage.setItem('accessToken', token);
+        </script>
+    <% } %>
+      
   </header><!-- End Header -->
 
 <body>
@@ -129,20 +136,20 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <input type="submit" value="Submit" onclick="logIn()">
+            <input type="submit" value="Submit">
             <a href="#" onclick="logOut();" class="logout-link">Log Out</a>
         </form>
     </div>
 
     <script>
-        function logIn()
-            {
-                let password = document.getElementById("password").value;
-                localStorage.setItem('password', password);
+        // function logIn()
+        //     {
+        //         let password = document.getElementById("password").value;
+        //         localStorage.setItem('password', password);
 
-                let username = document.getElementById("username").value;
-                localStorage.setItem('username', username);
-            }
+        //         let username = document.getElementById("username").value;
+        //         localStorage.setItem('username', username);
+        //     }
         
         function logOut()
                 {
