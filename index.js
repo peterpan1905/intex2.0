@@ -1,5 +1,6 @@
 // Authors: Pierce Walker, Nathan Moore, Traeden Overly, Patrick Petty
 const express = require("express");
+const { platform } = require("os");
 
 let app = express();
 
@@ -47,35 +48,50 @@ app.get("/dashboard", (req, res) => {
     res.render("dashboard");
 });
 
-app.post("/login", (req,res) => {
-    res.send("");
+app.post("/login", async (req, res) => {
+    try {
+        const user = await knex("logins").select("password").where("username", req.body.username);
+
+        if (user && user.password === req.body.password) {
+            res.render("data");
+        } else {
+            res.send("Username and password incorrect.");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
-// app.post("/addRecord", (req, res) => {
-//     for (count = 0; count<)
-//     res.send(req.body.age);
-//     res.send(req.body.gender);
-//     res.send(req.body.relationshipStatus);
-//     res.send(req.body.occupation);
-//     res.send(req.body.organizationType);
-//     res.send(req.body.socialMediaUser);
-//     res.send(req.body.platformName);
-//     res.send(req.body.hoursOnSocialMedia);
-//     res.send(req.body.useSocialMediaNoPurpose);
-//     res.send(req.body.distractedBySocialMediaRating);
-//     res.send(req.body.restlessWhenNotUsingSocialMediaRating);
-//     res.send(req.body.easilyDistractedGeneralRating);
-//     res.send(req.body.botheredByWorriesGeneralRating);
-//     res.send(req.body.concentrationGeneralRating);
-//     res.send(req.body.compareToOthersRating);
-//     res.send(req.body.howComparissonFeelsRating);
-//     res.send(req.body.seekValidationRating);
-//     res.send(req.body.depressionGeneralRating);
-//     res.send(req.body.interestFluctuateRating);
-//     res.send(req.body.generalSleepRating);
 
-        // res.send("Survey submitted successfully!")
-// });
+app.post("/addRecord", (req, res) => {
+    let aPlatformName = req.body.platformName;
+    aPlatformName.forEach(platform => {
+        knex("smumhdb").insert({
+            age: req.body.age,
+            gender: req.body.gender,
+            relationship_status: req.body.relationshipStatus,
+            occupation: req.body.occupation,
+            organization_number: req.body.organizationType,
+            media_user: req.body.socialMediaUser,
+            platform_number: platform,
+            hours_on_media: req.body.hoursOnSocialMedia,
+            use_media_no_purpose: req.body.useSocialMediaNoPurpose,
+            distracted_by_media: req.body.distractedBySocialMediaRating,
+            restless_not_using_media: req.body.restlessWhenNotUsingSocialMediaRating,
+            easily_distracted: req.body.easilyDistractedGeneralRating,
+            bothered_by_worries: req.body.botheredByWorriesGeneralRating,
+            concentration: req.body.concentrationGeneralRating,
+            compare_to_others: req.body.compareToOthersRating,
+            how_comparisson_feels: req.body.howComparissonFeelsRating,
+            seek_validation: req.body.seekValidationRating,
+            depression: req.body.depressionGeneralRating,
+            interest_fluctuate: req.body.interestFluctuateRating,
+            general_sleep: req.body.generalSleepRating
+        })
+    });
+    res.send("Survey submitted successfully!")
+});
 
 app.post("/report", (req, res) => {
     res.send(req.body.empFirst);
