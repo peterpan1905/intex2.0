@@ -1,5 +1,6 @@
 // Authors: Pierce Walker, Nathan Moore, Traeden Overly, Patrick Petty
 const express = require("express");
+const bodyParser = require("body-parser");
 const { platform } = require("os");
 
 let app = express();
@@ -19,7 +20,7 @@ const knex = require("knex")({
         user : process.env.RDS_USERNAME || "postgres",
         password : process.env.RDS_PASSWORD || "buddy",
         database : process.env.RDS_DB_NAME || "music",
-        port : process.env.RDS_PORT || 5433,
+        port : process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
     }
 }); 
@@ -30,10 +31,6 @@ app.get("/", (req, res) => {
 
 app.get("/landingPage", (req, res) => {
     res.render("landingPage");
-});
-
-app.get("/login", (req,res) => {
-    res.render("login");
 });
 
 app.get("/info", (req,res) => {
@@ -48,20 +45,61 @@ app.get("/dashboard", (req, res) => {
     res.render("dashboard");
 });
 
-app.post("/login", async (req, res) => {
-    try {
-        const user = await knex("logins").select("password").where("username", req.body.username);
-
-        if (user && user.password === req.body.password) {
-            res.render("data");
-        } else {
-            res.send("Username and password incorrect.");
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    }
+app.get("/login", (req,res) => {
+    res.render("login");
 });
+
+app.get("/data", async (req, res) => {
+    try 
+    {
+        const user = await knex("logins").select("password").where("username", req.localStorage.getItem("username")).first();
+    
+        if (user && user.password === req.localStorage.getItem("password")) 
+        {
+          res.render("data");
+        } 
+        else 
+        {
+          res.render("login");
+        }
+    }
+    catch (error) 
+        {
+            res.render("login");
+        }
+    });
+
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+  
+    try {
+      const user = await knex("logins").select("password").where("username", username).first();
+  
+      if (user && user.password === password) {
+        res.render("data");
+      } else {
+        res.send("Username and password incorrect.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
+
+// app.post("/login", async (req, res) => {
+//     try {
+//         const user = await knex("logins").select("password").where("username", localStorage.getItem("username"));
+
+//         if (user && user.password === localStorage.getItem("password")) {
+//             res.render("data");
+//         } else {
+//             res.send("Username and password incorrect.");
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
 
 
 app.post("/addRecord", (req, res) => {
