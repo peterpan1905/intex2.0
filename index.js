@@ -2,6 +2,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { platform } = require("os");
+const jwt = require("jsonwebtoken");
+
+const secretKey = "ThisWillRemainASecret";
 
 let app = express();
 
@@ -50,41 +53,60 @@ app.get("/login", (req,res) => {
 });
 
 app.get("/data", async (req, res) => {
-    try 
-    {
-        const user = await knex("logins").select("password").where("username", req.localStorage.getItem("username")).first();
+    try {
+        const decodedToken = jwt.verify(token, secretKey);
+        console.log(decodedToken);
+      } catch (error) {
+        console.error('Token verification failed:', error.message);
+      }
+    // try 
+    // {
+    //     const user = await knex("logins").select("password").where("username", req.localStorage.getItem("username")).first();
     
-        if (user && user.password === req.localStorage.getItem("password")) 
-        {
-          res.render("data");
-        } 
-        else 
-        {
-          res.render("login");
-        }
-    }
-    catch (error) 
-        {
-            res.render("login");
-        }
+    //     if (user && user.password === req.localStorage.getItem("password")) 
+    //     {
+    //       res.render("data");
+    //     } 
+    //     else 
+    //     {
+    //       res.render("login");
+    //     }
+    // } catch (error) {
+    //         res.render("login");
+    //     }
     });
 
 app.post("/login", async (req, res) => {
+    // Validate the username and password (add your validation logic)
     const { username, password } = req.body;
-  
-    try {
-      const user = await knex("logins").select("password").where("username", username).first();
-  
-      if (user && user.password === password) {
-        res.render("data");
-      } else {
-        res.send("Username and password incorrect.");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      res.status(500).send("Internal Server Error");
+    const user = await knex("logins").select("password").where("username", username).first();
+
+    if (user && password === user.password) {
+        // If the credentials are valid, generate a token
+        const token = jwt.sign({ username }, secretKey, { expiresIn: "1h" });
+        res.json({ token });
+        res.redirect("/data");
+    } else {
+        res.status(401).json({ message: "Invalid credentials" });
     }
-  });
+});
+//     const { username, password } = req.body;
+  
+//     try {
+//       const user = await knex("logins").select("password").where("username", username).first();
+  
+//       if (user && user.password === password) {
+//         req.session.username = username;
+//         req.session.password = password;
+//         res.redirect("/data");
+//       } else {
+//         res.render("login");
+//       }
+//     } catch (error) {
+//       console.error("Error during login:", error);
+//       res.render("login");
+//     }
+//   });
 
 // app.post("/login", async (req, res) => {
 //     try {
