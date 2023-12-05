@@ -130,29 +130,8 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <button type="button" onclick="login()">Login</button>
+            <input type="submit" value="Submit">
         </form>
     </div>
-  
-    <script>
-        function login() {
-            // Get input values
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-
-            // Replace this with your actual database check (server-side validation is recommended)
-            // For simplicity, using hardcoded values here
-            var validUsernames = ["user1", "user2"];
-            var validPasswords = ["password1", "password2"];
-
-            // Check if the entered username and password are valid
-            if (validUsernames.includes(username) && validPasswords.includes(password)) {
-                alert("Login successful! Redirecting to the website...");
-                // Add code here to redirect to the main website
-            } else {
-                alert("Invalid username or password. Please try again.");
-            }
-        }
-    </script>
 </body>
 </html>
