@@ -28,6 +28,18 @@ const knex = require("knex")({
     }
 }); 
 
+// Define the verifyToken middleware
+const verifyToken = (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
+        const decodedToken = jwt.verify(token, secretKey); // Verify the token using the secret key
+        req.user = decodedToken; // Store the decoded user information in the request object
+        next(); // Allow access if the token is valid
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid token' }); // Return unauthorized error if the token is invalid
+    }
+};
+
 app.get("/", (req, res) => {
     res.render("landingPage");
 });
@@ -52,28 +64,12 @@ app.get("/login", (req,res) => {
     res.render("login");
 });
 
-app.get("/data", async (req, res) => {
+app.get("/data", verifyToken, async (req, res) => {
     try {
-        const decodedToken = jwt.verify(token, secretKey);
-        console.log(decodedToken);
+        res.render("data");
       } catch (error) {
         console.error('Token verification failed:', error.message);
       }
-    // try 
-    // {
-    //     const user = await knex("logins").select("password").where("username", req.localStorage.getItem("username")).first();
-    
-    //     if (user && user.password === req.localStorage.getItem("password")) 
-    //     {
-    //       res.render("data");
-    //     } 
-    //     else 
-    //     {
-    //       res.render("login");
-    //     }
-    // } catch (error) {
-    //         res.render("login");
-    //     }
     });
 
 app.post("/login", async (req, res) => {
@@ -83,46 +79,12 @@ app.post("/login", async (req, res) => {
 
     if (user && password === user.password) {
         // If the credentials are valid, generate a token
-        const token = jwt.sign({ username }, secretKey, { expiresIn: "1h" });
-        res.json({ token });
-        res.redirect("/data");
+        const token = jwt.sign({ username: username }, secretKey, { expiresIn: "1h" });
+        res.json({ token: token });
     } else {
         res.status(401).json({ message: "Invalid credentials" });
     }
 });
-//     const { username, password } = req.body;
-  
-//     try {
-//       const user = await knex("logins").select("password").where("username", username).first();
-  
-//       if (user && user.password === password) {
-//         req.session.username = username;
-//         req.session.password = password;
-//         res.redirect("/data");
-//       } else {
-//         res.render("login");
-//       }
-//     } catch (error) {
-//       console.error("Error during login:", error);
-//       res.render("login");
-//     }
-//   });
-
-// app.post("/login", async (req, res) => {
-//     try {
-//         const user = await knex("logins").select("password").where("username", localStorage.getItem("username"));
-
-//         if (user && user.password === localStorage.getItem("password")) {
-//             res.render("data");
-//         } else {
-//             res.send("Username and password incorrect.");
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
 
 app.post("/addRecord", async (req, res) => {
     await knex("survey").insert({
