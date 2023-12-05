@@ -102,33 +102,50 @@ app.post("/login", async (req, res) => {
 // });
 
 
-app.post("/addRecord", (req, res) => {
-    let aPlatformName = req.body.platformName;
-    aPlatformName.forEach(platform => {
-        knex("smumhdb").insert({
-            age: req.body.age,
-            gender: req.body.gender,
-            relationship_status: req.body.relationshipStatus,
-            occupation: req.body.occupation,
-            organization_number: req.body.organizationType,
-            media_user: req.body.socialMediaUser,
-            platform_number: platform,
-            hours_on_media: req.body.hoursOnSocialMedia,
-            use_media_no_purpose: req.body.useSocialMediaNoPurpose,
-            distracted_by_media: req.body.distractedBySocialMediaRating,
-            restless_not_using_media: req.body.restlessWhenNotUsingSocialMediaRating,
-            easily_distracted: req.body.easilyDistractedGeneralRating,
-            bothered_by_worries: req.body.botheredByWorriesGeneralRating,
-            concentration: req.body.concentrationGeneralRating,
-            compare_to_others: req.body.compareToOthersRating,
-            how_comparisson_feels: req.body.howComparissonFeelsRating,
-            seek_validation: req.body.seekValidationRating,
-            depression: req.body.depressionGeneralRating,
-            interest_fluctuate: req.body.interestFluctuateRating,
-            general_sleep: req.body.generalSleepRating
-        })
+app.post("/addRecord", async (req, res) => {
+    await knex("survey").insert({
+        media_user: req.body.socialMediaUser,
+        hours_on_media: req.body.hoursOnSocialMedia,
+        use_media_no_purpose: req.body.useSocialMediaNoPurpose,
+        distracted_by_media: req.body.distractedBySocialMediaRating,
+        restless_not_using_media: req.body.restlessWhenNotUsingSocialMediaRating,
+        easily_distracted: req.body.easilyDistractedGeneralRating,
+        bothered_by_worries: req.body.botheredByWorriesGeneralRating,
+        concentration: req.body.concentrationGeneralRating,
+        compare_to_others: req.body.compareToOthersRating,
+        how_comparisson_feels: req.body.howComparissonFeelsRating,
+        seek_validation: req.body.seekValidationRating,
+        depression: req.body.depressionGeneralRating,
+        interest_fluctuate: req.body.interestFluctuateRating,
+        general_sleep: req.body.generalSleepRating
     });
-    res.send("Survey submitted successfully!")
+    const aSurveyNumbers = await knex("survey").select(knex.raw("max(survey_number) as max_survey_number"));
+    const survey_number = aSurveyNumbers[0].max_survey_number
+    await knex("user").insert({
+        survey_number: survey_number,
+        age: req.body.age,
+        gender: req.body.gender,
+        relationship_status: req.body.relationshipStatus,
+        occupation: req.body.occupation,
+    });
+    let aPlatformName = [req.body.platformName];
+    aPlatformName.forEach(platform => {
+        if (platform != null){
+                knex("user_platform").insert({
+                    survey_number: survey_number,
+                    platform_number: platform
+            });
+        }
+    });
+    let aOrganizationType = [req.body.organizationType];
+    aOrganizationType.forEach(organization => {
+        if (organization != null){
+            knex("user_organization").insert({
+                survey_number: survey_number,
+                organization_number: organization
+            });
+        }
+    });
 });
 
 app.post("/report", (req, res) => {
