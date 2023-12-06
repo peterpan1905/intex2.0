@@ -1877,3 +1877,9 @@ section {
   background:  rgb(0,164,224);
   border: none;
 }
+.survey-intro{
+  color: #555555;
+  margin: 5px 0 30px 0;
+  font-size: 24px;
+  font-weight: 400;
+}
