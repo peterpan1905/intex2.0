@@ -112,21 +112,22 @@ app.post("/login", async (req, res) => {
     // Validate the username and password (add your validation logic)
     const { username, password } = req.body;
     const dbuser = await knex("logins").select().where("username", username);
+    const user = { username: username };
     if (dbuser == null) {
         return res.status(400).send('Cannot find user')
     }
     try {
         if (await bcrypt.compare(password, dbuser.password)) {
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-            const loggedIn = true;
+            // const loggedIn = true;
             res.json({ token: token });
+            // res.redirect("/data");
         } else {
             res.send("Invalid credentials");
         }
     } catch {
         res.status(500).send();
     }
-    const user = { username: username };
 });
 
 app.post("/addRecord", async (req, res) => {
