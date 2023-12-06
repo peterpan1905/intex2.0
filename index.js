@@ -22,7 +22,7 @@ const knex = require("knex")({
     connection: {
         host : process.env.RDS_HOSTNAME || "localhost",
         user : process.env.RDS_USERNAME || "postgres",
-        password : process.env.RDS_PASSWORD || "buddy",
+        password : process.env.RDS_PASSWORD || "admin",
         database : process.env.RDS_DB_NAME || "intex",
         port : process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
@@ -232,5 +232,11 @@ app.post("/addRecord", async (req, res) => {
     res.render("survey")
 });
 
+app.get("/account", checkLoggedIn, (req, res) => {
+    let distinctAccountNum = knex("logins").select("username");
+
+    knex.select().from("logins").then( account => {
+        res.render("account", { myaccount : account, accountSelections: distinctAccountNum})})
+ });
 
 app.listen(port, () => console.log("Server is running"));
