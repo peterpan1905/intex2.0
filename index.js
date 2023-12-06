@@ -2,10 +2,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { platform } = require("os");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const session = require("express-session");
 
-require('dotenv').config();
 
 let app = express();
 
@@ -18,47 +16,76 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+app.use(session({ secret: 'BananaPancakes', resave: false, saveUninitialized: true }));
 
 const knex = require("knex")({
     client: "pg",
     connection: {
         host : process.env.RDS_HOSTNAME || "localhost",
         user : process.env.RDS_USERNAME || "postgres",
-        password : process.env.RDS_PASSWORD || "buddy",
-        database : process.env.RDS_DB_NAME || "intex",
-        port : process.env.RDS_PORT || 5432,
+        password : process.env.RDS_PASSWORD || "admin",
+        database : process.env.RDS_DB_NAME || "intex_practice",
+        port : process.env.RDS_PORT || 5433,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
     }
 }); 
 
-// Define the verifyToken middleware
-function verifyToken (req, res, next) {
-    try {
-        const authHeader = req.headers.authorization; // Extract the token from the Authorization header
-        const token = authHeader && authHeader.split(' ')[1];
-        if (token == null) return res.sendStatus(401);
-
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-            if (err) return res.sendStatus(403);
-            req.user = user;
-            next();
-        }); // Verify the token using the secret key
-        req.user = decodedToken; // Store the decoded user information in the request object
-        next(); // Allow access if the token is valid
-    } catch (error) {
-        res.status(401).json({ message: 'Invalid token' }); // Return unauthorized error if the token is invalid
+function checkLoggedIn (req, res, next) {
+    if (req.session.loggedIn) {
+        next();
+    } else {
+        res.redirect("/login"); //possibly add a variable to alert the client that they need to login to gain access
     }
-};
+}
 
-app.get("/data2", (req, res) => {
-    knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
-    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
-    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
-    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
-    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
-        res.render("data2", { mysurvey : survey});
+app.post("/login", async (req, res) => {
+    if (req.session.loggedIn) {
+        res.send("You are already logged in")
+    } else {
+        const { username, password } = req.body;
+        const dbUser = await knex("logins").select().where("username", username).first();
+        if (!dbUser) {
+            return res.status(400).send("Cannot find user");
+        }
+        try {
+            if (password === dbUser.password) {
+                req.session.loggedIn = true;
+                req.session.username = username;
+                res.redirect("data2");
+            } else {
+                res.redirect("/login"); // possibly pass a variable containing a string alerting the client the login was invalid
+            }
+        } catch (error) {
+            console.error('Login error:', error.message);
+            res.status(500).send();
+        }
+    }
+});
+
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+        }
+        res.redirect("/landingPage");
     })
-})
+});
+
+app.get("/data2", checkLoggedIn, async (req, res) => {
+    res.send("This is the data2 page");
+    // try{
+    //     knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
+    //     .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+    //     .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+    //     .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+    //     .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
+    //         res.render("data2", { mysurvey : survey});
+    //     })
+    // } catch (error) {
+    //     console.error('Verification failed:', error.message);
+    //     res.redirect('/login');
+    // }
+});
 
 app.get("/", (req, res) => {
     res.render("landingPage");
@@ -84,7 +111,7 @@ app.get("/login", (req,res) => {
     res.render("login")
 });
 
-app.get("/data", verifyToken, async (req, res) => {
+app.get("/data", async (req, res) => {
     try {
         res.render("data");
     } catch (error) {
@@ -103,28 +130,6 @@ app.post('/users/create', async (res, req) => {
         // const user = { username: req.body.username, password: hashedPassword }; I don't think I need this when inserting into a database
         await knex("users").insert({ username: req.body.username, password: hashedPassword})
         res.status(201).send();
-    } catch {
-        res.status(500).send();
-    }
-});
-
-app.post("/login", async (req, res) => {
-    // Validate the username and password (add your validation logic)
-    const { username, password } = req.body;
-    const dbuser = await knex("logins").select().where("username", username);
-    const user = { username: username };
-    if (dbuser == null) {
-        return res.status(400).send('Cannot find user')
-    }
-    try {
-        if (await bcrypt.compare(password, dbuser.password)) {
-            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-            // const loggedIn = true;
-            res.json({ token: token });
-            // res.redirect("/data");
-        } else {
-            res.send("Invalid credentials");
-        }
     } catch {
         res.status(500).send();
     }
@@ -195,3 +200,27 @@ app.post("/report", (req, res) => {
 });
 
 app.listen(port, () => console.log("Server is running"));
+
+// const jwt = require("jsonwebtoken");
+// const bcrypt = require("bcrypt");
+
+// require('dotenv').config();
+
+// // Define the verifyToken middleware
+// function verifyToken (req, res, next) {
+//     try {
+//         const authHeader = req.headers.authorization; // Extract the token from the Authorization header
+//         const token = authHeader && authHeader.split(' ')[1];
+//         if (token == null) return res.sendStatus(401);
+
+//         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//             if (err) return res.sendStatus(403);
+//             req.user = user;
+//             next();
+//         }); // Verify the token using the secret key
+//         req.user = decodedToken; // Store the decoded user information in the request object
+//         next(); // Allow access if the token is valid
+//     } catch (error) {
+//         res.status(401).json({ message: 'Invalid token' }); // Return unauthorized error if the token is invalid
+//     }
+// };
