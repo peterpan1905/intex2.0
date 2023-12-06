@@ -5,6 +5,7 @@ const { platform } = require("os");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+
 require('dotenv').config();
 
 let app = express();
@@ -94,6 +95,21 @@ app.get("/landingPage", (req, res) => {
     res.render("landingPage");
 });
 
+// Serve your static files (like HTML, CSS, or images) from a folder
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.post("/contact", (req, res) => {
+    const { name, email, subject, message } = req.body;
+
+    // Process the form data as needed (e.g., send emails, save to a database)
+
+    // For now, just log the form data
+    console.log('Form Data:', { name, email, subject, message });
+
+    // Respond to the client
+    res.send('Form submission successful!');
+});
+
 app.get("/info", (req,res) => {
     res.render("info");
 });
@@ -111,8 +127,7 @@ app.get("/login", (req,res) => {
 });
 
 app.get("/data", (req, res) => {
-
-    });
+});
 
 app.post("/login", (req, res) => {
     
