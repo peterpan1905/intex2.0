@@ -48,7 +48,7 @@ app.get("/data2", checkLoggedIn, (req, res) => {
         res.render("data2", { mysurvey : survey})})
  });
 
- app.get("/data2/filtered", (req, res) => {
+ app.get("/data2filtered", (req, res) => {
     let surveynum = req.query.surveySelect;
   
     knex.select()

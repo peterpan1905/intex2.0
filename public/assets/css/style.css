@@ -1859,8 +1859,8 @@ section {
   padding: 10px;
   margin-top: 10px;
   text-decoration: none;
-  background-color: #ccc;
-  color: #333;
+  background-color:  rgb(0,164,224);
+  color: white;
   border-radius: 5px;
 }
 .survey-button{
@@ -1908,7 +1908,7 @@ th, td {
 }
 
 thead {
-  background-color: #007bff;
+  background-color:  rgb(0,164,224);
   color: white;
 }
 

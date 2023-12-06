@@ -132,8 +132,9 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" class="logout-link">
             <a href="#" onclick="logOut();" class="logout-link">Log Out</a>
+            <a href="#" onclick="create();" class="logout-link">Create Account</a>
         </form>
     </div>
 
@@ -151,6 +152,10 @@
                 {
                     window.location.href = '/logout';      
                 }
-    </script>
+        function create()
+        {
+            window.location.href = '/create';      
+        }
+</script>
 </body>
 </html>
