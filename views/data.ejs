@@ -34,6 +34,24 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  <script>
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'authorization': `Bearer ${token}`,
+        },
+      };
+  
+      fetch('/data', requestOptions)
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Data fetch failed:', error.message));
+    } else {
+      console.error('No access token found');
+    }
+  </script>
 </head>
 
 <body>
