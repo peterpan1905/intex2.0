@@ -107,7 +107,8 @@ app.post("/addRecord", async (req, res) => {
         seek_validation: req.body.seekValidationRating,
         depression: req.body.depressionGeneralRating,
         interest_fluctuate: req.body.interestFluctuateRating,
-        general_sleep: req.body.generalSleepRating
+        general_sleep: req.body.generalSleepRating,
+        location: "Provo"
     });
     const aSurveyNumbers = await knex("survey").select(knex.raw("max(survey_number) as max_survey_number"));
     const survey_number = aSurveyNumbers[0].max_survey_number
