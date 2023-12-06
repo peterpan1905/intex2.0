@@ -84,49 +84,12 @@ app.get("/login", (req,res) => {
     res.render("login")
 });
 
-app.get("/data", verifyToken, async (req, res) => {
-    try {
-        res.render("data");
-    } catch (error) {
-        console.error('Token verification failed:', error.message);
-    }
+app.get("/data", (req, res) => {
+
     });
 
-app.get('/users', (res, req) => {
+app.post("/login", (req, res) => {
     
-});
-
-app.post('/users/create', async (res, req) => {
-    try {
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
-        // const user = { username: req.body.username, password: hashedPassword }; I don't think I need this when inserting into a database
-        await knex("users").insert({ username: req.body.username, password: hashedPassword})
-        res.status(201).send();
-    } catch {
-        res.status(500).send();
-    }
-});
-
-app.post("/login", async (req, res) => {
-    // Validate the username and password (add your validation logic)
-    const { username, password } = req.body;
-    const dbuser = await knex("logins").select().where("username", username);
-    if (dbuser == null) {
-        return res.status(400).send('Cannot find user')
-    }
-    try {
-        if (await bcrypt.compare(password, dbuser.password)) {
-            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-            const loggedIn = true;
-            res.json({ token: token });
-        } else {
-            res.send("Invalid credentials");
-        }
-    } catch {
-        res.status(500).send();
-    }
-    const user = { username: username };
 });
 
 app.post("/addRecord", async (req, res) => {
