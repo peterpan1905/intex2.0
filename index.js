@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(express.json());
+app.use(express.json());
 app.use(session({ secret: 'BananaPancakes', resave: false, saveUninitialized: true }));
 
 const knex = require("knex")({
