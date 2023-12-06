@@ -24,36 +24,58 @@
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Add a container to center the content */
+
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-  
+
     th, td {
-      border: 1px solid black;
-      padding: 8px;
+      border: 1px solid #dee2e6;
+      padding: 12px;
       text-align: left;
-      padding-left: 12px; /* Adjust the left padding as needed */
     }
-  
+
     thead {
-      background-color: cornflowerblue;
+      background-color: #007bff;
       color: white;
     }
-  
-    tbody {
-      font-family: Arial;
-      font-size: 9pt;
-    }
-  
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-  
-    /* Add more styles as needed */
-  </style>
 
+    tbody {
+      font-size: 14px;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    tbody tr:hover {
+      background-color: #e2e6ea;
+    }
+
+    th, td {
+      padding: 15px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 767px) {
+      table {
+        overflow-x: auto;
+      }
+    }
+  </style>
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
@@ -80,8 +102,8 @@
             <li><a href="/info">Info</a></li>
             <li><a href="/survey">Survey</a></li>
             <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/data2">Data</a></li>
             <li><a href="/login">Login</a></li>
-            <li><a href="#">Data</a></li>
           </ul>
           <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
@@ -89,8 +111,9 @@
       </div>
     </header>
     <!-- End Header -->
+
   <br>
-    <form action="/data2/filtered" method="get" id="filterform" name="filterform">
+    <form action="/data2/filtered" method="get" id="filterform" name="filterform" style="margin: 65px;">
         <label for="surveySelect"><b>Select Survey:</b></label>
         <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
             <option>Select a Survey</option>
@@ -112,68 +135,67 @@
     </script>
     </form>
    
-   
-   <table style="width: 100%; background-color: antiquewhite; border: 1px solid black;">
-     <thead style="background-color: cornflowerblue; color: white;">
-       <tr>
-         <th style="text-align: left;">Survey Number</th>
-         <th style="text-align: left;">Time Stamp</th>
-         <th style="text-align: left;">Location</th>
-         <th style="text-align: left;">Age</th>
-         <th style="text-align: left;">Gender</th>
-         <th style="text-align: left;">Relationship Status</th>
-         <th style="text-align: left;">Occupation Status</th>
-         <th style="text-align: left;">Associated Organizations</th>
-         <th style="text-align: left;">Media User</th>
-         <th style="text-align: left;">Platform Name</th>
-         <th style="text-align: left;">Hours on Media</th>
-         <th style="text-align: left;">Use Media No Purpose</th>
-         <th style="text-align: left;">Distracted by Media</th>
-         <th style="text-align: left;">Restless Not Using Media</th>
-         <th style="text-align: left;">Easily Distracted</th>
-         <th style="text-align: left;">Bothered by Worries</th>
-         <th style="text-align: left;">Concentration</th>
-         <th style="text-align: left;">Compare to Others</th>
-         <th style="text-align: left;">How Comparisson Feels</th>
-         <th style="text-align: left;">Seek Validation</th>
-         <th style="text-align: left;">Depression</th>
-         <th style="text-align: left;">Interest Fluctuate</th>
-         <th style="text-align: left;">General Sleep</th>
-         <th></th>
-         <th></th>
-       </tr>
-     </thead>
-     <tbody style="font-family: Arial; font-size: 9pt;">
-      <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
-         <tr>
-           
-           <td><%= mysurvey[iCount].survey_number %></td>
-           <td><%= mysurvey[iCount].timestamp %></td>
-           <td><%= mysurvey[iCount].location %></td>
-           <td><%= mysurvey[iCount].age %></td>
-           <td><%= mysurvey[iCount].gender %></td>
-           <td><%= mysurvey[iCount].relationship_status %></td>
-           <td><%= mysurvey[iCount].occupation_status %></td>
-           <td><%= mysurvey[iCount].organization_type %></td>
-           <td><%= mysurvey[iCount].media_user %></td>
-           <td><%= mysurvey[iCount].platform_name %></td>
-           <td><%= mysurvey[iCount].hours_on_media %></td>
-           <td><%= mysurvey[iCount].use_media_no_purpose %></td>
-           <td><%= mysurvey[iCount].distracted_by_media %></td>
-           <td><%= mysurvey[iCount].restless_not_using_media %></td>
-           <td><%= mysurvey[iCount].easily_distracted %></td>
-           <td><%= mysurvey[iCount].bothered_by_worries %></td>
-           <td><%= mysurvey[iCount].concentration %></td>
-           <td><%= mysurvey[iCount].compare_to_others %></td>
-           <td><%= mysurvey[iCount].how_comparisson_feels %></td>
-           <td><%= mysurvey[iCount].seek_validation %></td>
-           <td><%= mysurvey[iCount].depression %></td>
-           <td><%= mysurvey[iCount].interest_fluctuate %></td>
-           <td><%= mysurvey[iCount].general_sleep %></td>
-         </tr>
-      <% } %>
+    <div class="container">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: left;">Survey Number</th>
+            <th style="text-align: left;">Time Stamp</th>
+            <th style="text-align: left;">Location</th>
+            <th style="text-align: left;">Age</th>
+            <th style="text-align: left;">Gender</th>
+            <th style="text-align: left;">Relationship Status</th>
+            <th style="text-align: left;">Occupation Status</th>
+            <th style="text-align: left;">Associated Organizations</th>
+            <th style="text-align: left;">Media User</th>
+            <th style="text-align: left;">Platform Name</th>
+            <th style="text-align: left;">Hours on Media</th>
+            <th style="text-align: left;">Use Media No Purpose</th>
+            <th style="text-align: left;">Distracted by Media</th>
+            <th style="text-align: left;">Restless Not Using Media</th>
+            <th style="text-align: left;">Easily Distracted</th>
+            <th style="text-align: left;">Bothered by Worries</th>
+            <th style="text-align: left;">Concentration</th>
+            <th style="text-align: left;">Compare to Others</th>
+            <th style="text-align: left;">How Comparisson Feels</th>
+            <th style="text-align: left;">Seek Validation</th>
+            <th style="text-align: left;">Depression</th>
+            <th style="text-align: left;">Interest Fluctuate</th>
+            <th style="text-align: left;">General Sleep</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
+            <tr>
+              
+              <td><%= mysurvey[iCount].survey_number %></td>
+              <td><%= mysurvey[iCount].timestamp %></td>
+              <td><%= mysurvey[iCount].location %></td>
+              <td><%= mysurvey[iCount].age %></td>
+              <td><%= mysurvey[iCount].gender %></td>
+              <td><%= mysurvey[iCount].relationship_status %></td>
+              <td><%= mysurvey[iCount].occupation_status %></td>
+              <td><%= mysurvey[iCount].organization_type %></td>
+              <td><%= mysurvey[iCount].media_user %></td>
+              <td><%= mysurvey[iCount].platform_name %></td>
+              <td><%= mysurvey[iCount].hours_on_media %></td>
+              <td><%= mysurvey[iCount].use_media_no_purpose %></td>
+              <td><%= mysurvey[iCount].distracted_by_media %></td>
+              <td><%= mysurvey[iCount].restless_not_using_media %></td>
+              <td><%= mysurvey[iCount].easily_distracted %></td>
+              <td><%= mysurvey[iCount].bothered_by_worries %></td>
+              <td><%= mysurvey[iCount].concentration %></td>
+              <td><%= mysurvey[iCount].compare_to_others %></td>
+              <td><%= mysurvey[iCount].how_comparisson_feels %></td>
+              <td><%= mysurvey[iCount].seek_validation %></td>
+              <td><%= mysurvey[iCount].depression %></td>
+              <td><%= mysurvey[iCount].interest_fluctuate %></td>
+              <td><%= mysurvey[iCount].general_sleep %></td>
+            </tr>
+          <% } %>
      </tbody>
    </table>
+   </div>
    <br><br>
 </body>
 </html>
