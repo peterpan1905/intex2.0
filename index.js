@@ -108,7 +108,6 @@ app.get("/landingPage", (req, res) => {
 });
 
 // Serve your static files (like HTML, CSS, or images) from a folder
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.post("/contact", (req, res) => {
     const { name, email, subject, message } = req.body;
@@ -191,7 +190,6 @@ app.post("/addRecord", async (req, res) => {
         depression: req.body.depressionGeneralRating,
         interest_fluctuate: req.body.interestFluctuateRating,
         general_sleep: req.body.generalSleepRating,
-        location: "Provo"
     });
     const aSurveyNumbers = await knex("survey").select(knex.raw("max(survey_number) as max_survey_number"));
     const survey_number = aSurveyNumbers[0].max_survey_number
@@ -205,15 +203,17 @@ app.post("/addRecord", async (req, res) => {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    });
-
+    })
+    
     await knex("user").insert({
         // survey_number: survey_number,
+        location: "Provo",
         timestamp: currentTimestamp,
         age: req.body.age,
         gender: req.body.gender,
         relationship_status: req.body.relationshipStatus,
         occupation_status: req.body.occupation_status,
+        
     });
     let aPlatformName = [req.body.platformName];
     aPlatformName.forEach(platform => {
