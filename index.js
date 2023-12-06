@@ -2,10 +2,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { platform } = require("os");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-
-require('dotenv').config();
+const session = require("express-session");
 
 let app = express();
 
@@ -18,6 +15,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+app.use(session({ secret: 'BananaPancakes', resave: false, saveUninitialized: true }));
 
 const knex = require("knex")({
     client: "pg",
@@ -31,26 +29,15 @@ const knex = require("knex")({
     }
 }); 
 
-// Define the verifyToken middleware
-function verifyToken (req, res, next) {
-    try {
-        const authHeader = req.headers.authorization; // Extract the token from the Authorization header
-        const token = authHeader && authHeader.split(' ')[1];
-        if (token == null) return res.sendStatus(401);
-
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-            if (err) return res.sendStatus(403);
-            req.user = user;
-            next();
-        }); // Verify the token using the secret key
-        req.user = decodedToken; // Store the decoded user information in the request object
-        next(); // Allow access if the token is valid
-    } catch (error) {
-        res.status(401).json({ message: 'Invalid token' }); // Return unauthorized error if the token is invalid
+function checkLoggedIn (req, res, next) {
+    if (req.session.loggedIn) {
+        next();
+    } else {
+        res.redirect("/login"); //possibly add a variable to alert the client that they need to login to gain access
     }
-};
+}
 
-app.get("/data2", (req, res) => {
+app.get("/data2", checkLoggedIn, (req, res) => {
     let distinctSurveyNum = knex.select(knex.raw("distinct u.survey_number")).from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
     .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
     .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
@@ -114,8 +101,37 @@ app.get("/data", (req, res) => {
 
     });
 
-app.post("/login", (req, res) => {
-    
+app.post("/login", async (req, res) => {
+    if (req.session.loggedIn) {
+        res.send("You are already logged in")
+    } else {
+        const { username, password } = req.body;
+        const dbUser = await knex("logins").select().where("username", username).first();
+        if (!dbUser) {
+            return res.status(400).send("Cannot find user");
+        }
+        try {
+            if (password === dbUser.password) {
+                req.session.loggedIn = true;
+                req.session.username = username;
+                res.redirect("data2");
+            } else {
+                res.redirect("/login"); // possibly pass a variable containing a string alerting the client the login was invalid
+            }
+        } catch (error) {
+            console.error('Login error:', error.message);
+            res.status(500).send();
+        }
+    }
+});
+
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+        }
+        res.redirect("/landingPage");
+    })
 });
 
 app.post("/addRecord", async (req, res) => {
