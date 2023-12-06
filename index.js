@@ -51,14 +51,40 @@ function verifyToken (req, res, next) {
 };
 
 app.get("/data2", (req, res) => {
+    let distinctSurveyNum = knex.select(knex.raw("distinct u.survey_number")).from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
+    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
+
     knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
     .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
     .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
     .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
     .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
-        res.render("data2", { mysurvey : survey});
-    })
-})
+        res.render("data2", { mysurvey : survey, surveySelections: distinctSurveyNum})})
+ });
+
+ app.get("/data2/filtered", (req, res) => {
+    let surveynum = req.query.surveySelect;
+  
+    knex.select()
+      .from("user as u")
+      .join('survey as s', 'u.survey_number', '=', 's.survey_number')
+      .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+      .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+      .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+      .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
+      .where("u.survey_number", '=', surveynum)
+      .then(survey => {
+        res.render("data2", { mysurvey: survey });
+      })
+      .catch(error => {
+        console.error('Error executing the query:', error);
+        res.status(500).send('Internal Server Error');
+      });
+  });
+  
 
 app.get("/", (req, res) => {
     res.render("landingPage");
@@ -189,8 +215,5 @@ app.post("/addRecord", async (req, res) => {
     res.render("survey")
 });
 
-app.post("/report", (req, res) => {
-    res.send(req.body.empFirst);
-});
 
 app.listen(port, () => console.log("Server is running"));

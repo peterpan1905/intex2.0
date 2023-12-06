@@ -5,13 +5,36 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
 </head>
+
 <body>
-   <label><b>Information:</b></label>
+
+    
+    <form action="/data2/filtered" method="get" id="filterform" name="filterform">
+        <label for="surveySelect"><b>Select Survey:</b></label>
+        <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
+            <option>Select a Survey</option>
+            <% for (let iCount = 0; iCount < surveySelections.length; iCount++) { %>
+                <option value="<%= surveySelections[iCount].survey_number %>">
+                Survey <%= surveySelections[iCount].survey_number %>
+                </option>
+            <% } %>
+        </select>
+        <input type="submit" value="Submit">
+        <input type="button" value="Clear Selection" onclick="clearSelection()">
+    </form>
+    
+    <script>
+        function clearSelection() {
+            // Redirect to /data2 route
+            window.location.href = '/data2';
+        }
+    </script>
+    </form>
    <br><br>
    <table style="width: 100%; background-color: antiquewhite; border: 1px solid black;">
      <thead style="background-color: cornflowerblue; color: white;">
        <tr>
-         <th style="text-align: left;">survey_number</th>
+         <th style="text-align: left;">Survey Number</th>
          <th style="text-align: left;">Time Stamp</th>
          <th style="text-align: left;">Location</th>
          <th style="text-align: left;">Age</th>
@@ -19,21 +42,21 @@
          <th style="text-align: left;">Relationship Status</th>
          <th style="text-align: left;">Occupation Status</th>
          <th style="text-align: left;">Associated Organizations</th>
-         <th style="text-align: left;">media_user</th>
-         <th style="text-align: left;">platform_name</th>
-         <th style="text-align: left;">hours_on_media</th>
-         <th style="text-align: left;">use_media_no_purpose</th>
-         <th style="text-align: left;">distracted_by_media</th>
-         <th style="text-align: left;">restless_not_using_media</th>
-         <th style="text-align: left;">easily_distracted</th>
-         <th style="text-align: left;">bothered_by_worries</th>
-         <th style="text-align: left;">concentration</th>
-         <th style="text-align: left;">compare_to_others</th>
-         <th style="text-align: left;">how_comparisson_feels</th>
-         <th style="text-align: left;">seek_validation</th>
-         <th style="text-align: left;">depression</th>
-         <th style="text-align: left;">interest_fluctuate</th>
-         <th style="text-align: left;">general_sleep</th>
+         <th style="text-align: left;">Media User</th>
+         <th style="text-align: left;">Platform Name</th>
+         <th style="text-align: left;">Hours on Media</th>
+         <th style="text-align: left;">Use Media No Purpose</th>
+         <th style="text-align: left;">Distracted by Media</th>
+         <th style="text-align: left;">Restless Not Using Media</th>
+         <th style="text-align: left;">Easily Distracted</th>
+         <th style="text-align: left;">Bothered by Worries</th>
+         <th style="text-align: left;">Concentration</th>
+         <th style="text-align: left;">Compare to Others</th>
+         <th style="text-align: left;">How Comparisson Feels</th>
+         <th style="text-align: left;">Seek Validation</th>
+         <th style="text-align: left;">Depression</th>
+         <th style="text-align: left;">Interest Fluctuate</th>
+         <th style="text-align: left;">General Sleep</th>
          <th></th>
          <th></th>
        </tr>
@@ -65,23 +88,10 @@
            <td><%= mysurvey[iCount].depression %></td>
            <td><%= mysurvey[iCount].interest_fluctuate %></td>
            <td><%= mysurvey[iCount].general_sleep %></td>
-           <td>
-             <form action="/editSurvey/<%= mysurvey[iCount].survey_number %>" method="GET">
-               <button type="submit">Edit</button>
-             </form>
-           </td>
-           <td style="text-align: center;">
-             <form action="/deleteSurvey/<%= mysurvey[iCount].survey_number %>" method="POST">
-               <button type="submit">Delete</button>
-             </form>
-           </td>
          </tr>
       <% } %>
      </tbody>
    </table>
    <br><br>
-   <form action="/addCountry" method="GET">
-     <button type="submit">Add Country</button>
-   </form>
 </body>
 </html>
