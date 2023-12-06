@@ -24,57 +24,7 @@
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
-    }
 
-    /* Add a container to center the content */
-
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: #ffffff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    th, td {
-      border: 1px solid #dee2e6;
-      padding: 12px;
-      text-align: left;
-    }
-
-    thead {
-      background-color: #007bff;
-      color: white;
-    }
-
-    tbody {
-      font-size: 14px;
-    }
-
-    tbody tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
-
-    tbody tr:hover {
-      background-color: #e2e6ea;
-    }
-
-    th, td {
-      padding: 15px;
-    }
-
-    /* Responsive styles */
-    @media (max-width: 767px) {
-      table {
-        overflow-x: auto;
-      }
-    }
   </style>
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
@@ -114,13 +64,13 @@
     <!-- End Header -->
 
   <br>
-    <form action="/data2/filtered" method="get" id="filterform" name="filterform" style="margin: 65px;">
+    <form action="/data2filtered" method="get" id="filterform" name="filterform" style="margin: 65px;">
         <label for="surveySelect"><b>Select Survey:</b></label>
         <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
             <option>Select a Survey</option>
-            <% for (let iCount = 0; iCount < surveySelections.length; iCount++) { %>
-                <option value="<%= surveySelections[iCount].survey_number %>">
-                Survey <%= surveySelections[iCount].survey_number %>
+            <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
+                <option value="<%= mysurvey[iCount].survey_number %>">
+                Survey <%= mysurvey[iCount].survey_number %>
                 </option>
             <% } %>
         </select>
