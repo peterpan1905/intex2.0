@@ -3,8 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { platform } = require("os");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-const secretKey = "ThisWillRemainASecret";
+require('dotenv').config();
 
 let app = express();
 
@@ -16,6 +17,7 @@ const port = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
 const knex = require("knex")({
     client: "pg",
@@ -30,10 +32,17 @@ const knex = require("knex")({
 }); 
 
 // Define the verifyToken middleware
-const verifyToken = (req, res, next) => {
+function verifyToken (req, res, next) {
     try {
-        const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
-        const decodedToken = jwt.verify(token, secretKey); // Verify the token using the secret key
+        const authHeader = req.headers.authorization; // Extract the token from the Authorization header
+        const token = authHeader && authHeader.split(' ')[1];
+        if (token == null) return res.sendStatus(401);
+
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) return res.sendStatus(403);
+            req.user = user;
+            next();
+        }); // Verify the token using the secret key
         req.user = decodedToken; // Store the decoded user information in the request object
         next(); // Allow access if the token is valid
     } catch (error) {
@@ -72,30 +81,52 @@ app.get("/dashboard", (req, res) => {
 });
 
 app.get("/login", (req,res) => {
-    res.render("login");
+    res.render("login")
 });
 
 app.get("/data", verifyToken, async (req, res) => {
     try {
         res.render("data");
-      } catch (error) {
+    } catch (error) {
         console.error('Token verification failed:', error.message);
-      }
+    }
     });
+
+app.get('/users', (res, req) => {
+    
+});
+
+app.post('/users/create', async (res, req) => {
+    try {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        // const user = { username: req.body.username, password: hashedPassword }; I don't think I need this when inserting into a database
+        await knex("users").insert({ username: req.body.username, password: hashedPassword})
+        res.status(201).send();
+    } catch {
+        res.status(500).send();
+    }
+});
 
 app.post("/login", async (req, res) => {
     // Validate the username and password (add your validation logic)
     const { username, password } = req.body;
-    const user = await knex("logins").select("password").where("username", username).first();
-
-    if (user && password === user.password) {
-        // If the credentials are valid, generate a token
-        const token = jwt.sign({ username: username }, secretKey, { expiresIn: "1h" });
-        const loggedIn = true;
-        res.json({ token, loggedIn });
-    } else {
-        res.status(401).json({ message: "Invalid credentials" });
+    const dbuser = await knex("logins").select().where("username", username);
+    if (dbuser == null) {
+        return res.status(400).send('Cannot find user')
     }
+    try {
+        if (await bcrypt.compare(password, dbuser.password)) {
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+            const loggedIn = true;
+            res.json({ token: token });
+        } else {
+            res.send("Invalid credentials");
+        }
+    } catch {
+        res.status(500).send();
+    }
+    const user = { username: username };
 });
 
 app.post("/addRecord", async (req, res) => {
