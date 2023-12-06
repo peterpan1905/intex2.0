@@ -1863,3 +1863,17 @@ section {
   color: #333;
   border-radius: 5px;
 }
+.survey-button{
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding: 10px 28px;
+  border-radius: 4px;
+  transition: 0.5s;
+  color: #fff;
+  background:  rgb(0,164,224);
+  border: none;
+}
