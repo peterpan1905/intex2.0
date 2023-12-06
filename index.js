@@ -72,6 +72,32 @@ app.get("/data2", checkLoggedIn, (req, res) => {
       });
   });
   
+  app.get("/create", checkLoggedIn, (req, res) => {
+    let errorMessage = null;
+    let successMessage = null;
+    res.render("create", { errorMessage, successMessage });
+});
+
+app.post('/create', async (req, res) => {
+    const { username, password, confirmPassword } = req.body;
+    let errorMessage = null;
+    let successMessage = null;
+
+    if (password !== confirmPassword) {
+        errorMessage = 'Passwords need to match';
+    } else {
+        const dbUser = await knex("logins").select().where('username', '=', username);
+        if (dbUser.length > 0) {
+            errorMessage = 'That username is already being used';
+        } else {
+            await knex("logins").insert({ username: username, password: password });
+            successMessage = 'User has been created successfully'
+        }
+    }
+    if (req.method === "POST") {
+        res.render('create', { errorMessage, successMessage });
+    }
+});
 
 app.get("/", (req, res) => {
     res.render("landingPage");
