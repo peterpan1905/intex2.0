@@ -4,13 +4,12 @@ const bodyParser = require("body-parser");
 const { platform } = require("os");
 const session = require("express-session");
 
-
 let app = express();
 
 let path = require("path");  
 const { render } = require("ejs");
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 6000;
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
@@ -85,6 +84,10 @@ app.get("/data2", checkLoggedIn, async (req, res) => {
     //     console.error('Verification failed:', error.message);
     //     res.redirect('/login');
     // }
+});
+
+app.get("/create", checkLoggedIn, async (req, res) => {
+    res.render("create");
 });
 
 app.get("/", (req, res) => {
