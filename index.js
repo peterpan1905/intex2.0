@@ -37,18 +37,22 @@ function checkLoggedIn (req, res, next) {
     }
 }
 
-app.get("/data2", checkLoggedIn, (req, res) => {
-    let distinctSurveyNum = knex("survey").select("survey_number");
+app.get("/data", checkLoggedIn, (req, res) => {
+    // let distinctSurveyNum = knex("survey").select("survey_number");
 
     knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
     .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
     .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
     .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
     .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
-        res.render("data2", { mysurvey : survey, surveySelections: distinctSurveyNum})})
+        res.render("data", { mysurvey : survey})})
  });
 
+<<<<<<< HEAD
  app.get("/data2filtered", (req, res) => {
+=======
+ app.get("/datafiltered", (req, res) => {
+>>>>>>> main
     let surveynum = req.query.surveySelect;
   
     knex.select()
@@ -60,7 +64,7 @@ app.get("/data2", checkLoggedIn, (req, res) => {
       .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
       .where("u.survey_number", '=', surveynum)
       .then(survey => {
-        res.render("data2", { mysurvey: survey });
+        res.render("data", { mysurvey: survey });
       })
       .catch(error => {
         console.error('Error executing the query:', error);
@@ -134,10 +138,13 @@ app.get("/login", (req,res) => {
     res.render("login");
 });
 
+<<<<<<< HEAD
 // app.get("/data", (req, res) => {
 
 //     });
 
+=======
+>>>>>>> main
 app.post("/login", async (req, res) => {
     if (req.session.loggedIn) {
         res.send("You are already logged in")
@@ -151,7 +158,7 @@ app.post("/login", async (req, res) => {
             if (password === dbUser.password) {
                 req.session.loggedIn = true;
                 req.session.username = username;
-                res.redirect("data2");
+                res.redirect("data");
             } else {
                 res.redirect("/login"); // possibly pass a variable containing a string alerting the client the login was invalid
             }
@@ -203,7 +210,6 @@ app.post("/addRecord", async (req, res) => {
     })
     
     await knex("user").insert({
-        // survey_number: survey_number,
         location: "Provo",
         timestamp: currentTimestamp,
         age: req.body.age,
@@ -233,6 +239,12 @@ app.post("/addRecord", async (req, res) => {
     res.render("survey")
 });
 
+app.get("/account", checkLoggedIn, (req, res) => {
+    let distinctAccountNum = knex("logins").select("username");
+
+    knex.select().from("logins").then( account => {
+        res.render("account", { myaccount : account, accountSelections: distinctAccountNum})})
+ });
 
 app.get("/account", checkLoggedIn, (req, res) => {
     const loggedInUsername = req.session.username; // Assuming you have the username stored in the session
@@ -250,20 +262,7 @@ app.get("/account", checkLoggedIn, (req, res) => {
     }
 });
 
-//  app.get("/accountfiltered", (req, res) => {
-//     let username = req.query.usernameSelect;
-  
-//     knex.select()
-//       .from("logins")
-//       .where("logins.username", '=', username)
-//       .then(username => {
-//         res.render("account", { myaccount : username, accountSelections: distinctAccountNum});
-//     })
-//       .catch(error => {
-//         console.error('Error executing the query:', error);
-//         res.status(500).send('Internal Server Error');
-//     });
-// });
+
 
 app.get("/edituser", (req, res) => {
     let currentUsername = req.query.editusername;

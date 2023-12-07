@@ -34,50 +34,117 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-  <script>
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          'authorization': `Bearer ${token}`,
-        },
-      };
-  
-      fetch('/data', requestOptions)
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Data fetch failed:', error.message));
-    } else {
-      console.error('No access token found');
-    }
-  </script>
 </head>
-
 <body>
-  <!-- ======= Header ======= -->
-  <header id="header" class="d-flex align-items-center">
-    <div class="container d-flex align-items-center justify-content-between">
+    <!-- ======= Header ======= -->
+    <header id="header" class="d-flex align-items-center">
+      <div class="container d-flex align-items-center justify-content-between">
+  
+        <h1 class="logo"><a href="landingPage">Social Media & Mental Health<span>.</span></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt=""></a>-->
+  
+        <nav id="navbar" class="navbar">
+          <ul>
+            <li><a href="/landingPage">Home</a></li>
+            <li><a href="/info">Info</a></li>
+            <li><a href="/survey">Survey</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/data">Data</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/account">Account</a></li>
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+  
+      </div>
+    </header>
+    <!-- End Header -->
 
-      <h1 class="logo"><a href="landingPage">Social Media & Mental Health<span>.</span></a></h1>
-      <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt=""></a>-->
-
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a href="/landingPage">Home</a></li>
-          <li><a href="/info">Info</a></li>
-          <li><a href="/survey">Survey</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/login">Login</a></li>
-          <li><a href="#">Data</a></li>
-        </ul>
-        <i class="bi bi-list mobile-nav-toggle"></i>
-      </nav><!-- .navbar -->
-
-    </div>
-  </header><!-- End Header -->
-
-<body>
+  <br>
+    <form action="/datafiltered" method="get" id="filterform" name="filterform" style="margin: 20px;">
+        <label for="surveySelect"><b>Select Survey:</b></label>
+        <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
+            <option>Select a Survey</option>
+            <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
+                <option value="<%= mysurvey[iCount].survey_number %>">
+                Survey <%= mysurvey[iCount].survey_number %>
+                </option>
+            <% } %>
+        </select>
+        <input type="submit" value="Submit">
+        <input type="button" value="Clear Selection" onclick="clearSelection()">
+    </form>
     
+    <script>
+        function clearSelection() {
+            // Redirect to /data route
+            window.location.href = '/data';
+        }
+    </script>
+    </form>
+   
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: left;">Survey Number</th>
+            <th style="text-align: left;">Time Stamp</th>
+            <th style="text-align: left;">Location</th>
+            <th style="text-align: left;">Age</th>
+            <th style="text-align: left;">Gender</th>
+            <th style="text-align: left;">Relationship Status</th>
+            <th style="text-align: left;">Occupation Status</th>
+            <th style="text-align: left;">Associated Organizations</th>
+            <th style="text-align: left;">Media User</th>
+            <th style="text-align: left;">Platform Name</th>
+            <th style="text-align: left;">Hours on Media</th>
+            <th style="text-align: left;">Use Media No Purpose</th>
+            <th style="text-align: left;">Distracted by Media</th>
+            <th style="text-align: left;">Restless Not Using Media</th>
+            <th style="text-align: left;">Easily Distracted</th>
+            <th style="text-align: left;">Bothered by Worries</th>
+            <th style="text-align: left;">Concentration</th>
+            <th style="text-align: left;">Compare to Others</th>
+            <th style="text-align: left;">How Comparisson Feels</th>
+            <th style="text-align: left;">Seek Validation</th>
+            <th style="text-align: left;">Depression</th>
+            <th style="text-align: left;">Interest Fluctuate</th>
+            <th style="text-align: left;">General Sleep</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
+            <tr>
+              
+              <td><%= mysurvey[iCount].survey_number %></td>
+              <td><%= mysurvey[iCount].timestamp %></td>
+              <td><%= mysurvey[iCount].location %></td>
+              <td><%= mysurvey[iCount].age %></td>
+              <td><%= mysurvey[iCount].gender %></td>
+              <td><%= mysurvey[iCount].relationship_status %></td>
+              <td><%= mysurvey[iCount].occupation_status %></td>
+              <td><%= mysurvey[iCount].organization_type %></td>
+              <td><%= mysurvey[iCount].media_user %></td>
+              <td><%= mysurvey[iCount].platform_name %></td>
+              <td><%= mysurvey[iCount].hours_on_media %></td>
+              <td><%= mysurvey[iCount].use_media_no_purpose %></td>
+              <td><%= mysurvey[iCount].distracted_by_media %></td>
+              <td><%= mysurvey[iCount].restless_not_using_media %></td>
+              <td><%= mysurvey[iCount].easily_distracted %></td>
+              <td><%= mysurvey[iCount].bothered_by_worries %></td>
+              <td><%= mysurvey[iCount].concentration %></td>
+              <td><%= mysurvey[iCount].compare_to_others %></td>
+              <td><%= mysurvey[iCount].how_comparisson_feels %></td>
+              <td><%= mysurvey[iCount].seek_validation %></td>
+              <td><%= mysurvey[iCount].depression %></td>
+              <td><%= mysurvey[iCount].interest_fluctuate %></td>
+              <td><%= mysurvey[iCount].general_sleep %></td>
+            </tr>
+          <% } %>
+     </tbody>
+   </table>
+   </div>
+   <br><br>
 </body>
+</html>
