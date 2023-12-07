@@ -38,7 +38,7 @@ function checkLoggedIn (req, res, next) {
     if (req.session.loggedIn) {
         next();
     } else {
-        res.redirect("/login", { loginMessage: loginMessage });
+        res.render("login", { loginMessage: loginMessage, loggedIn: req.session.loggedIn });
     }  
 }
 
@@ -57,6 +57,50 @@ app.get("/create", checkLoggedIn, (req, res) => {
 });
 
 // route to create a new user and save the username and password to the logins table
+// app.post('/create', async (req, res) => {
+//     const { username, password, confirmPassword } = req.body;
+//     let errorMessage = null;
+
+//     // Check if the username already exists
+//     const dbUser = await knex("logins").select().where('username', '=', username);
+
+//     if (dbUser.length > 0) {
+//         // Username already exists
+//         errorMessage = 'That username is already being used';
+//     } else {
+//         // Continue with the user creation logic
+//         if (password !== confirmPassword) {
+//             errorMessage = 'Passwords need to match';
+//         } else {
+//             await knex("logins").insert({ username: username, password: password });
+//         }
+//     }
+//     // Render the create page with the appropriate messages
+//     res.render('create', { errorMessage, successMessage, loggedIn: req.session.loggedIn });
+// });
+
+// app.post('/create', async (req, res) => {
+//     const { username, password, confirmPassword } = req.body;
+//     let errorMessage = null;
+
+//     // Check if the username already exists
+//     const dbUser = await knex("logins").select().where('username', '=', username);
+
+//     if (dbUser.length > 0) {
+//         // Username already exists
+//         errorMessage = 'That username is already being used';
+//     } else {
+//         // Continue with the user creation logic
+//         if (password !== confirmPassword) {
+//             errorMessage = 'Passwords need to match';
+//         } else {
+//             await knex("logins").insert({ username: username, password: password });
+//         }
+//     }
+//     // Render the create page with the appropriate messages
+//     res.render('create', { errorMessage, successMessage, loggedIn: req.session.loggedIn });
+// });
+
 app.post('/create', async (req, res) => {
     const { username, password, confirmPassword } = req.body;
     let errorMessage = null;
@@ -73,10 +117,12 @@ app.post('/create', async (req, res) => {
             errorMessage = 'Passwords need to match';
         } else {
             await knex("logins").insert({ username: username, password: password });
+            // Redirect to the account page after successful user creation
+            return res.redirect('/account');
         }
     }
     // Render the create page with the appropriate messages
-    res.render('create', { errorMessage, successMessage, loggedIn: req.session.loggedIn });
+    res.render('create', { errorMessage, loggedIn: req.session.loggedIn });
 });
 
 // default rout to display landing page
@@ -241,7 +287,7 @@ app.get("/account", checkLoggedIn, (req, res) => {
         });
     } else {
         // Display data only for the specific username
-        knex.select().from("logins").where("username", loggedInUsername).then(user => {
+        knex.select().from("logins").where("username", tempusername).then(user => {
             res.render("account", { dbUser : user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
         });
     }
