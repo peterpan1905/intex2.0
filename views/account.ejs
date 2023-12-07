@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Data</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/FavConFinal.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Add a container to center the content */
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #007bff;
+      color: white;
+    }
+
+    tbody {
+      font-size: 14px;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    tbody tr:hover {
+      background-color: #e2e6ea;
+    }
+
+    th, td {
+      padding: 15px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 767px) {
+      table {
+        overflow-x: auto;
+      }
+    }
+  </style>
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: BizLand
+  * Updated: Sep 18 2023 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/bizland-bootstrap-business-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="d-flex align-items-center">
+      <div class="container d-flex align-items-center justify-content-between">
+  
+        <h1 class="logo"><a href="landingPage">Social Media & Mental Health<span>.</span></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt=""></a>-->
+  
+        <nav id="navbar" class="navbar">
+          <ul>
+            <li><a href="/landingPage">Home</a></li>
+            <li><a href="/info">Info</a></li>
+            <li><a href="/survey">Survey</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/data2">Data</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/account">Account</a></li>
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+  
+      </div>
+    </header>
+    <!-- End Header -->
+
+  <br>
+
+    <!-- <form action="/accountfiltered" method="get" id="filterform" name="filterform" style="margin: 65px;">
+        <label for="usernameSelect"><b>Select User:</b></label>
+        <select id="usernameSelect" name="usernameSelect" onchange="loadSelectedSurvey()">
+            <option>Select a User</option>
+            <% //for (let iCount = 1; iCount < myaccount.length; iCount++) { %>
+                <option value="<%= //myaccount[iCount].username %>">
+                <%= //myaccount[iCount].username %>
+                </option>
+            <% //} %>
+        </select>
+        <input type="button" value="Edit" action="/edit" method="get">
+        <input type="button" value="Delete" action="/delete" method="post">
+    </form> -->
+   
+    <div class="container">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: left;">Username</th>
+            <th style="text-align: left;">Password</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let iCount = 0; iCount < myaccount.length; iCount++) { %>
+            <tr>
+                <td><%= myaccount[iCount].username %></td>
+                <td><%= myaccount[iCount].password %></td>
+                <td style="text-align: center;">
+                    <form action="/edituser" method="GET" style="display: inline;">
+                        <input type="hidden" name="editusername" value="<%= myaccount[iCount].username %>">
+                        <button type="submit">Edit</button>
+                    </form>  
+                    <form action="/deleteuser" method="POST" style="display: inline;">
+                        <input type="hidden" name="deleteusername" value="<%= myaccount[iCount].username %>">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>            
+          <% } %>
+     </tbody>
+   </table>
+   </div>
+   <br><br>
+</body>
+</html>

@@ -15,7 +15,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-app.use(session({ secret: 'BananaPancakes', resave: false, saveUninitialized: true }));
+app.use(session({ secret: 'BananaPancakes', resave: true, saveUninitialized: true }));
 
 const knex = require("knex")({
     client: "pg",
@@ -48,7 +48,7 @@ app.get("/data2", checkLoggedIn, (req, res) => {
         res.render("data2", { mysurvey : survey, surveySelections: distinctSurveyNum})})
  });
 
- app.get("/data2/filtered", (req, res) => {
+ app.get("/data2filtered", (req, res) => {
     let surveynum = req.query.surveySelect;
   
     knex.select()
@@ -130,12 +130,13 @@ app.get("/dashboard", (req, res) => {
 });
 
 app.get("/login", (req,res) => {
-    res.render("login")
+    const LOGIN = req.session && req.session.loggedIn;
+    res.render("login");
 });
 
-app.get("/data", (req, res) => {
+// app.get("/data", (req, res) => {
 
-    });
+//     });
 
 app.post("/login", async (req, res) => {
     if (req.session.loggedIn) {
@@ -234,10 +235,103 @@ app.post("/addRecord", async (req, res) => {
 
 
 app.get("/account", checkLoggedIn, (req, res) => {
-    let distinctAccountNum = knex("logins").select("username");
+    const loggedInUsername = req.session.username; // Assuming you have the username stored in the session
 
-    knex.select().from("logins").then( account => {
-        res.render("account", { myaccount : account, accountSelections: distinctAccountNum})})
- });
+    if (loggedInUsername === "admin") {
+        // Display all data for the admin
+        knex.select().from("logins").then(user => {
+            res.render("account", { myaccount: user });
+        });
+    } else {
+        // Display data only for the specific username
+        knex.select().from("logins").where("username", loggedInUsername).then(user => {
+            res.render("account", { myaccount: user });
+        });
+    }
+});
+
+//  app.get("/accountfiltered", (req, res) => {
+//     let username = req.query.usernameSelect;
+  
+//     knex.select()
+//       .from("logins")
+//       .where("logins.username", '=', username)
+//       .then(username => {
+//         res.render("account", { myaccount : username, accountSelections: distinctAccountNum});
+//     })
+//       .catch(error => {
+//         console.error('Error executing the query:', error);
+//         res.status(500).send('Internal Server Error');
+//     });
+// });
+
+app.get("/edituser", (req, res) => {
+    let currentUsername = req.query.editusername;
+  
+    // Fetch the current user's information
+    knex.select().from("logins").where("username", "=", currentUsername)
+      .then(user => {
+        res.render("edituser", { currentUsername: currentUsername, currentUser: user[0] });
+    })
+      .catch(error => {
+        // Handle error
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    });
+});  
+
+app.post("/updateuser", (req, res) => {
+    let currentUsername = req.body.currentUsername;
+    let newUsername = req.body.newUsername;
+    let newPassword = req.body.newPassword;
+  
+    // Define an object to store the fields to be updated
+    let updateFields = {};
+  
+    // Check if a new username is provided
+    if (newUsername && newUsername.trim() !== "") {
+      updateFields.username = newUsername;
+    }
+  
+    // Check if a new password is provided
+    if (newPassword && newPassword.trim() !== "") {
+      updateFields.password = newPassword;
+    }
+  
+    // Update the user's information in the database
+    knex("logins")
+      .where("username", "=", currentUsername)
+      .update(updateFields)
+      .then(() => {
+        res.redirect("account"); // Redirect to the home page or another appropriate location
+      })
+      .catch(error => {
+        // Handle error
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      });
+  });   
+
+  app.post("/deleteuser", (req, res) => {
+    let currentUsername = req.body.deleteusername;
+    let loggedInUsername = req.session.username; // Assuming you store the logged-in username in the session
+
+    knex("logins")
+        .where("username", "=", currentUsername)
+        .delete()
+        .then(() => {
+            // Check if the deleted account is the one logged in
+            if (currentUsername === loggedInUsername) {
+                res.redirect("/logout"); // Redirect to the login page
+            } else {
+                res.redirect("account"); // Redirect to the home page or another appropriate location
+            }
+        })
+        .catch(error => {
+            // Handle error
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        });
+  });
 
 app.listen(port, () => console.log("Server is running"));
