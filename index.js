@@ -61,28 +61,28 @@ app.post('/create', async (req, res) => {
     const { username, password, confirmPassword } = req.body;
     let errorMessage = null;
 
-    if (password !== confirmPassword) {
-        errorMessage = 'Passwords need to match';
+    // Check if the username already exists
+    const dbUser = await knex("logins").select().where('username', '=', username);
+
+    if (dbUser.length > 0) {
+        // Username already exists
+        errorMessage = 'That username is already being used';
     } else {
-        const dbUser = await knex("logins").select().where('username', '=', username);
-        if (dbUser.length > 0) {
-            errorMessage = 'That username is already being used';
+        // Continue with the user creation logic
+        if (password !== confirmPassword) {
+            errorMessage = 'Passwords need to match';
         } else {
             await knex("logins").insert({ username: username, password: password });
         }
     }
-    if (errorMessage) {
-        res.render('create', { errorMessage: errorMessage, loggedIn: req.session.loggedIn })
-    } else {
-        if (req.method === "POST") {
-            res.redirect('/account');
-        }
-    }
+    // Render the create page with the appropriate messages
+    res.render('create', { errorMessage, successMessage, loggedIn: req.session.loggedIn });
 });
 
 // default rout to display landing page
 app.get("/", (req, res) => {
     res.render("landingPage", {loggedIn : req.session.loggedIn});
+
 });
 
 // route to display landing page
@@ -233,23 +233,22 @@ app.post("/addRecord", async (req, res) => {
 
 // route to render account.ejs, but only when the user is logged in (using the checkLoggedIn function)
 app.get("/account", checkLoggedIn, (req, res) => {
-    const loggedInUsername = req.session.username;
-
-    if (loggedInUsername === "admin") {
+    tempusername = req.session.username
+    if (tempusername === "admin") {
         // Display all data for the admin
         knex.select().from("logins").then(user => {
-            res.render("account", { myaccount: user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
+            res.render("account", { dbUser : user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
         });
     } else {
         // Display data only for the specific username
         knex.select().from("logins").where("username", loggedInUsername).then(user => {
-            res.render("account", { myaccount: user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
+            res.render("account", { dbUser : user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
         });
     }
 });
 
-// render the edituser.ejs if the user is logged in
-app.get("/edituser", (req, res) => {
+app.get("/edituser", checkLoggedIn, (req, res) => {
+
     let currentUsername = req.query.editusername;
   
     // Fetch the current user's information
@@ -288,7 +287,7 @@ app.post("/updateuser", (req, res) => {
       .where("username", "=", currentUsername)
       .update(updateFields)
       .then(() => {
-        res.redirect("/logout"); // Redirect to logout route
+        res.redirect("/account"); // Redirect to the home page or another appropriate location
       })
       .catch(error => {
         // Handle error
@@ -297,28 +296,30 @@ app.post("/updateuser", (req, res) => {
       });
   });   
 
-// route to delete a username
-app.post("/deleteuser", (req, res) => {
-    let currentUsername = req.body.deleteusername;
-    let loggedInUsername = req.session.username;
+  app.post("/deleteuser", (req, res) => {
+    let deleteUsername = req.body.deleteusername;
+    let currentUsername = req.session.username;
 
     knex("logins")
-    .where("username", "=", currentUsername)
-    .delete()
-    .then(() => {
-        // Check if the deleted account is the one logged in
-        if (currentUsername === loggedInUsername) {
-            res.redirect("/logout"); // Redirect to the login page
-        } else {
-            res.redirect("account"); // Redirect to the home page or another appropriate location
-        }
-    })
-    .catch(error => {
-        // Handle error
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-    });
-});
+        .where("username", "=", deleteUsername)
+        .delete()
+        .then(() => {
+            // Check if the deleted account is the one logged in
+            if (currentUsername === deleteUsername) {
+                res.redirect("/logout"); // Redirect to the login page
+            } else {
+                res.redirect("account"); // Redirect to the home page or another appropriate location
+            }
+        })
+        .catch(error => {
+            // Handle error
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        });
+  });
+
+ app.get("/data", checkLoggedIn, (req, res) => {
+
 
 // route to render data.ejs with a table of all the surveys submitted
 app.get("/data", checkLoggedIn, (req, res) => {

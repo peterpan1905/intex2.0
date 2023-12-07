@@ -113,6 +113,17 @@
 
     </div>
   </header><!-- End Header -->
+<body>
+    <% if (errorMessage) { %>
+        <script>
+            alert("<%= errorMessage %>");
+        </script>
+    <% } %>
+    <% if (successMessage) { %>
+        <script>
+            alert("<%= successMessage %>");
+        </script>
+    <% } %>
     <div class="login-container">
         <h2>Create User</h2>
         <form action="/create" method="post">
