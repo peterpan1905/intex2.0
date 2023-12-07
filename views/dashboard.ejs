@@ -47,12 +47,19 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="/landingPage">Home</a></li>
+          <li><a href="/landingpage">Home</a></li>
           <li><a href="/info">Info</a></li>
           <li><a href="/survey">Survey</a></li>
           <li><a href="#">Dashboard</a></li>
-          <li><a href="/data">Data</a></li>
-          <li><a href="/login">Login</a></li>
+          <% if (loggedIn) {%>
+            <li><a href="/data">Data</a></li>
+          <%}%>
+          <% if (loggedIn) { %>
+            <li><a href="/logout">Logout</a></li>
+        <% } else {%> <li><a href="/login">Login</a></li> <%}%> 
+          <% if (loggedIn) { %>
+            <li><a href="/account">Account</a></li>
+        <% } %> 
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
