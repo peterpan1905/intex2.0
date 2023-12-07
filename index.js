@@ -39,16 +39,17 @@ function checkLoggedIn (req, res, next) {
     }  
 }
 
+
 app.get("/create", checkLoggedIn, (req, res) => {
     let errorMessage = null;
     let successMessage = null;
     let loggedInUsername = req.session.username;
 
     if(loggedInUsername === "admin"){
-        res.render("create", {errorMessage, successMessage});
+        res.render("create", {errorMessage, successMessage, loggedIn: req.session.loggedIn});
     }
     else{
-        res.render("login");
+        res.render("login", {loggedIn: req.session.loggedIn});
     }
 });
 
@@ -78,7 +79,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/landingPage", (req, res) => {
-    res.render("landingPage");
+    res.render("landingPage", {loggedIn : req.session.loggedIn});
 });
 
 app.post("/contact", (req, res) => {
@@ -94,20 +95,20 @@ app.post("/contact", (req, res) => {
 });
 
 app.get("/info", (req,res) => {
-    res.render("info");
+    res.render("info", {loggedIn: req.session.loggedIn});
 });
 
 app.get("/survey", (req, res) => {
-    res.render("survey");
+    res.render("survey", {loggedIn: req.session.loggedIn});
 });
 
 app.get("/dashboard", (req, res) => {
-    res.render("dashboard");
+    res.render("dashboard", {loggedIn: req.session.loggedIn});
 });
 
 app.get("/login", (req,res) => {
-    let loginMessage = null; 
-    res.render("login", { loginMessage: loginMessage });
+    let loginMessage = null;
+    res.render("login", { loginMessage: loginMessage, loggedIn: req.session.loggedIn });
 });
 
 app.post("/login", async (req, res) => {
@@ -217,12 +218,12 @@ app.get("/account", checkLoggedIn, (req, res) => {
     if (loggedInUsername === "admin") {
         // Display all data for the admin
         knex.select().from("logins").then(user => {
-            res.render("account", { myaccount: user });
+            res.render("account", { myaccount: user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
         });
     } else {
         // Display data only for the specific username
         knex.select().from("logins").where("username", loggedInUsername).then(user => {
-            res.render("account", { myaccount: user });
+            res.render("account", { myaccount: user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
         });
     }
 });
@@ -233,7 +234,7 @@ app.get("/edituser", (req, res) => {
     // Fetch the current user's information
     knex.select().from("logins").where("username", "=", currentUsername)
       .then(user => {
-        res.render("edituser", { currentUsername: currentUsername, currentUser: user[0] });
+        res.render("edituser", { currentUsername: currentUsername, currentUser: user[0], loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
     })
       .catch(error => {
         // Handle error
@@ -297,14 +298,13 @@ app.post("/updateuser", (req, res) => {
   });
 
  app.get("/data", checkLoggedIn, (req, res) => {
-    // let distinctSurveyNum = knex("survey").select("survey_number");
 
     knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
     .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
     .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
     .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
     .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
-        res.render("data", { mysurvey : survey})})
+        res.render("data", { mysurvey : survey, loggedIn: req.session.loggedIn})})
  });
 
  app.get("/datafiltered", (req, res) => {
@@ -319,7 +319,7 @@ app.post("/updateuser", (req, res) => {
       .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
       .where("u.survey_number", '=', surveynum)
       .then(survey => {
-        res.render("data", { mysurvey: survey });
+        res.render("data", { mysurvey: survey, loggedIn: req.session.loggedIn });
       })
       .catch(error => {
         console.error('Error executing the query:', error);

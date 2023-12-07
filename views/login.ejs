@@ -107,14 +107,20 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="/landingPage">Home</a></li>
-          <li><a href="/info">Info</a></li>
-          <li><a href="/survey">Survey</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/data">Data</a></li>
-          <li><a href="#">Login</a></li>
-          <li><a href="/account">Account</a></li>
-        </ul>
+            <li><a href="/landingpage">Home</a></li>
+            <li><a href="/info">Info</a></li>
+            <li><a href="/survey">Survey</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <% if (loggedIn) {%>
+              <li><a href="/data">Data</a></li>
+            <%}%>
+            <% if (loggedIn) { %>
+              <li><a href="/logout">Logout</a></li>
+          <% } else {%> <li><a href="#">Login</a></li> <%}%> 
+            <% if (loggedIn) { %>
+              <li><a href="/account">Account</a></li>
+          <% } %> 
+          </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
 
@@ -140,11 +146,10 @@
 
             <input type="submit" value="Submit" class="logout-link">
             <a href="#" onclick="logOut();" class="logout-link2">Log Out</a>
-            <a href="#" onclick="create();" class="logout-link2">Create Account</a>
         </form>
     </div>
-
-    <script>        
+    
+    <script>
         function logOut()
         {
             window.location.href = '/logout';      
