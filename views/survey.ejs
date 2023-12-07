@@ -26,7 +26,25 @@
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+  
 
+    .container1 {
+      max-width: 800px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #ddd; /* Border color */
+      border-radius: 8px; /* Border radius for rounded corners */
+      background-color: #fff; /* Background color */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px solid rgb(0,0,0); /* Divider color */
+        }
+</style>
   <!-- =======================================================
   * Template Name: BizLand
   * Updated: Sep 18 2023 with Bootstrap v5.3.2
@@ -85,11 +103,10 @@
   <!-- ======= Survey Form ====== -->
   <section id="faq" class="">
     <div class="container" data-aos="fade-up">
-      <h5> Welcome to our survey on social media usage and well-being! In this study, we aim to gain insights into the relationship between 
-        individuals' social media habits, their levels of depression, and feelings of comparison. Your participation is crucial in helping 
-        us understand how different aspects of social media engagement may impact overall mental well-being. The survey consists of a series 
-        of simple questions that will provide valuable data for our research. Your honest and thoughtful responses are greatly appreciated. 
-        Thank you for contributing to our study and helping us uncover important insights in this evolving digital age.</h5><br>
+      <p class = "container1"> Welcome to our survey! We're studying the link between social media habits, depression, and comparison feelings. 
+        Your honest responses to simple questions will provide valuable insights. Thank you for contributing to our research on the impact of social media on mental well-being.</p><br>
+        <hr>
+        <br>
         <form action="/addRecord" method="post" id="surveyForm">
           <label for="age">1. Select your age: </label>
           <br>
