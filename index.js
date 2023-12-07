@@ -37,36 +37,7 @@ function checkLoggedIn (req, res, next) {
     }
 }
 
-app.get("/data", checkLoggedIn, (req, res) => {
-    // let distinctSurveyNum = knex("survey").select("survey_number");
 
-    knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
-    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
-    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
-    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
-    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
-        res.render("data", { mysurvey : survey})})
- });
-
- app.get("/datafiltered", (req, res) => {
-    let surveynum = req.query.surveySelect;
-  
-    knex.select()
-      .from("user as u")
-      .join('survey as s', 'u.survey_number', '=', 's.survey_number')
-      .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
-      .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
-      .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
-      .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
-      .where("u.survey_number", '=', surveynum)
-      .then(survey => {
-        res.render("data", { mysurvey: survey });
-      })
-      .catch(error => {
-        console.error('Error executing the query:', error);
-        res.status(500).send('Internal Server Error');
-      });
-  });
   
   app.get("/create", checkLoggedIn, (req, res) => {
     let errorMessage = null;
@@ -183,6 +154,7 @@ app.post("/addRecord", async (req, res) => {
         interest_fluctuate: req.body.interestFluctuateRating,
         general_sleep: req.body.generalSleepRating,
     });
+
     const aSurveyNumbers = await knex("survey").select(knex.raw("max(survey_number) as max_survey_number"));
     const survey_number = aSurveyNumbers[0].max_survey_number
     const currentTimestamp = new Date();
@@ -199,7 +171,7 @@ app.post("/addRecord", async (req, res) => {
     
     await knex("user").insert({
         location: "Provo",
-        timestamp: currentTimestamp,
+        timestamp: formattedTimestamp,
         age: req.body.age,
         gender: req.body.gender,
         relationship_status: req.body.relationshipStatus,
@@ -233,5 +205,35 @@ app.get("/account", checkLoggedIn, (req, res) => {
     knex.select().from("logins").then( account => {
         res.render("account", { myaccount : account, accountSelections: distinctAccountNum})})
  });
+ app.get("/data", checkLoggedIn, (req, res) => {
+    // let distinctSurveyNum = knex("survey").select("survey_number");
 
+    knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
+    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
+        res.render("data", { mysurvey : survey})})
+ });
+
+ app.get("/datafiltered", (req, res) => {
+    let surveynum = req.query.surveySelect;
+  
+    knex.select()
+      .from("user as u")
+      .join('survey as s', 'u.survey_number', '=', 's.survey_number')
+      .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+      .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+      .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+      .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
+      .where("u.survey_number", '=', surveynum)
+      .then(survey => {
+        res.render("data", { mysurvey: survey });
+      })
+      .catch(error => {
+        console.error('Error executing the query:', error);
+        res.status(500).send('Internal Server Error');
+      });
+  });
+  
 app.listen(port, () => console.log("Server is running"));
