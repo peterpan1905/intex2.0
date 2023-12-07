@@ -16,6 +16,7 @@ app.use(express.urlencoded({extended: true})); // gets the .value of tags in a f
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(session({ secret: 'BananaPancakes', resave: true, saveUninitialized: true }));
+app.use(express.static('public'));
 
 const knex = require("knex")({
     client: "pg",
@@ -34,17 +35,15 @@ function checkLoggedIn (req, res, next) {
     if (req.session.loggedIn) {
         next();
     } else {
-        res.redirect("/login"); //possibly add a variable to alert the client that they need to login to gain access, { loginMessage: loginMessage }
-    }
+        res.redirect("/login", { loginMessage: loginMessage }); //possibly add a variable to alert the client that they need to login to gain access, { loginMessage: loginMessage }
+    }  
 }
 
-
-  
-  app.get("/create", checkLoggedIn, (req, res) => {
+app.get("/create", checkLoggedIn, (req, res) => {
     let errorMessage = null;
     let successMessage = null;
     let loggedInUsername = req.session.username;
-    
+
     if(loggedInUsername === "admin"){
         res.render("create", {errorMessage, successMessage});
     }
@@ -82,8 +81,6 @@ app.get("/landingPage", (req, res) => {
     res.render("landingPage");
 });
 
-// Serve your static files (like HTML, CSS, or images) from a folder
-app.use(express.static('public'));
 app.post("/contact", (req, res) => {
     const { name, email, subject, message } = req.body;
 
@@ -109,14 +106,12 @@ app.get("/dashboard", (req, res) => {
 });
 
 app.get("/login", (req,res) => {
-    const LOGIN = req.session && req.session.loggedIn;
-    let loginMessage = null;
+    let loginMessage = null; 
     res.render("login", { loginMessage: loginMessage });
-
 });
 
 app.post("/login", async (req, res) => {
-    let loginMessage = "";
+    let loginMessage = null;
     if (req.session.loggedIn) {
         loginMessage = "You are already logged in.";
         res.render("login", { loginMessage: loginMessage })
