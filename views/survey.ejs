@@ -95,11 +95,12 @@
             <li><a href="/data">Data</a></li>
           <%}%>
           <% if (loggedIn) { %>
-            <li><a href="/logout">Logout</a></li>
-        <% } else {%> <li><a href="/login">Login</a></li> <%}%> 
-          <% if (loggedIn) { %>
             <li><a href="/account">Account</a></li>
         <% } %> 
+          <% if (loggedIn) { %>
+            <li><a href="/logout">Logout</a></li>
+        <% } else {%> <li><a href="/login">Login</a></li> <%}%> 
+
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -114,7 +115,7 @@
         Your honest responses to the following simple questions will provide valuable insights. Thank you for contributing to our research regarding the impact of social media on mental well-being.</p><br>
         <hr>
         <br>
-        <form action="/addRecord" method="post" id="surveyForm" onsubmit="validateForm()">
+        <form action="/addRecord" method="post" id="surveyForm" onsubmit="return validateForm()">
           <label for="age">1. Select your age: </label>
           <br>
           <select id="age" name="age" required>
@@ -620,6 +621,7 @@
               <li><i class="bx bx-chevron-right"></i> <a href="https://www.samhsa.gov/mental-health">SAMHSA</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="https://mhanational.org">Mental Health America</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="https://www.wasatch.org">Wasatch Behavioral Health</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://liveonutah.org">Live On Utah</a></li>
             </ul>
           </div>
         </div>
@@ -684,14 +686,12 @@
       if (!orgIsChecked) {
         alert("Please select at least one organization type.");
         return false;
-      }
-      if (!platIsChecked) {
+      } else if (!platIsChecked) {
         alert("Please select at least one platform type.");
         return false;
+      } else {
+        return true;
       }
-
-      // Continue with form submission if at least one checkbox is checked
-      return true;
     }
   </script>
 </body>
