@@ -89,7 +89,7 @@
 
 </head>
 
-<body style="background-color: #f4f4f4">
+<body style="background-color: #f4f4f4" onload="createMessage()">
   <!-- ======= Header ======= -->
   <header id="header" class="d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
@@ -128,20 +128,29 @@
     </div>
     <script>        
         function logOut()
-            {
-                window.location.href = '/logout';        
-            }
+        {
+            window.location.href = '/logout';        
+        }
         function check() 
-            {
-                if (document.getElementById('password').value ===
-                    document.getElementById('confirmPassword').value) {
-                    document.getElementById('message').style.color = 'green';
-                    document.getElementById('message').innerHTML = 'Passwords match';
-                } else {
-                    document.getElementById('message').style.color = 'red';
-                    document.getElementById('message').innerHTML = 'Passwords don\'t match';
-                }
+        {
+            if (document.getElementById('password').value ===
+                document.getElementById('confirmPassword').value) {
+                document.getElementById('message').style.color = 'green';
+                document.getElementById('message').innerHTML = 'Passwords match';
+            } else {
+                document.getElementById('message').style.color = 'red';
+                document.getElementById('message').innerHTML = 'Passwords don\'t match';
             }
+        }
+        function createMessage() 
+        {
+            if (errorMessage) {
+                alert('<%= errorMessage %>')
+            }
+            if (successMessage) {
+                alert('<%= successMessage %>')
+            }
+        }
     </script>
 </body>
 </html>

@@ -38,9 +38,7 @@ function checkLoggedIn (req, res, next) {
     }
 }
 
-
-  
-  app.get("/create", checkLoggedIn, (req, res) => {
+app.get("/create", checkLoggedIn, (req, res) => {
     let errorMessage = null;
     let successMessage = null;
     let loggedInUsername = req.session.username;
