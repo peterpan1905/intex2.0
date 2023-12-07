@@ -112,6 +112,7 @@ app.get("/login", (req,res) => {
     const LOGIN = req.session && req.session.loggedIn;
     let loginMessage = null;
     res.render("login", { loginMessage: loginMessage });
+
 });
 
 app.post("/login", async (req, res) => {
