@@ -54,11 +54,11 @@
               <li><a href="/data">Data</a></li>
             <%}%>
             <% if (loggedIn) { %>
-              <li><a href="/logout">Logout</a></li>
-          <% } else {%> <li><a href="/login">Login</a></li> <%}%> 
-            <% if (loggedIn) { %>
               <li><a href="#">Account</a></li>
           <% } %> 
+            <% if (loggedIn) { %>
+              <li><a href="/logout">Logout</a></li>
+          <% } else {%> <li><a href="/login">Login</a></li> <%}%> 
           <% if (loggedIn && loggedInUsername === 'admin'){ %>
             <li><a href="/create">Create User</a></li>
         <% } %> 

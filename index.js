@@ -69,12 +69,12 @@ app.post('/create', async (req, res) => {
         }
     }
     if (req.method === "POST") {
-        res.render('create', { errorMessage, successMessage });
+        res.redirect('/account');
     }
 });
 
 app.get("/", (req, res) => {
-    res.render("landingPage");
+    res.render("landingPage", {loggedIn : req.session.loggedIn});
 });
 
 app.get("/landingPage", (req, res) => {
@@ -208,7 +208,7 @@ app.post("/addRecord", async (req, res) => {
             });
         }
     });
-    res.render("survey")
+    res.render("survey", {loggedIn: req.session.loggedIn})
 });
 
 app.get("/account", checkLoggedIn, (req, res) => {
