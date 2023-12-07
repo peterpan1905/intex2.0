@@ -107,10 +107,10 @@
         Your honest responses to the following simple questions will provide valuable insights. Thank you for contributing to our research regarding the impact of social media on mental well-being.</p><br>
         <hr>
         <br>
-        <form action="/addRecord" method="post" id="surveyForm">
+        <form action="/addRecord" method="post" id="surveyForm" onsubmit="validateForm()">
           <label for="age">1. Select your age: </label>
           <br>
-          <select id="age" name="age">
+          <select id="age" name="age" required>
             <option selected disabled></option>
             <% for (let count = 13; count <= 100; count++) { %>
               <option value="<%= count %>"><%= count %></option>
@@ -119,7 +119,7 @@
           <br><br>
           <label for="gender">2. Select your gender: </label>
           <br>
-          <select id="gender" name="gender">
+          <select id="gender" name="gender" required>
             <option selected disabled></option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -130,7 +130,7 @@
           <br><br>
           <label for="relationshipStatus">3. Enter your relationship status: </label>
           <br>
-          <select id="relationshipStatus" name="relationshipStatus">
+          <select id="relationshipStatus" name="relationshipStatus" required>
             <option selected disabled></option>
             <option value="Single">Single</option>
             <option value="In a relationship">In a relationship</option>
@@ -141,7 +141,7 @@
           <br><br>
           <label for="occupation">4. Enter your occupation status: </label>
           <br>
-          <select id="occupation" name="occupation">
+          <select id="occupation" name="occupation" required>
             <option selected disabled></option>
             <option value="Student">Student</option>
             <option value="Part Time">Part Time Employee</option>
@@ -151,7 +151,7 @@
             <option value="Retired">Retired</option>
           </select>
           <br><br><br>
-          <label for="organizationType">5. What type of organizations are you affiliated with? </label>
+          <label>5. What type of organizations are you affiliated with? </label>
           <br>
           <input type="checkbox" id="school" name="organizationType" value="1">
           <label for="school">School</label><br>
@@ -161,8 +161,8 @@
           <label for="company">Company</label><br>
           <input type="checkbox" id="government" name="organizationType" value="4">
           <label for="government">Government</label><br>
-          <input type="checkbox" id="na" name="organizationType" value="5">
-          <label for="na">N/A</label><br>
+          <input type="checkbox" id="orgNA" name="organizationType" value="5">
+          <label for="orgNA">N/A</label><br>
           <br><br>
           <label>6. Do you use social media?</label>
           <br>
@@ -192,10 +192,12 @@
             <label for="pintrest">Pintrest</label><br>
             <input type="checkbox" id="snapchat" name="platformName" value="9">
             <label for="snapchat">Snapchat</label><br>
+            <input type="checkbox" id="paltNA" name="platformName" value="10">
+            <label for="platNA">N/A</label><br>
           <br><br>
           <label for="hoursOnSocialMedia">8. What is the average time you spend on social media every day?</label>
           <br>
-          <select id="hoursOnSocialMedia" name="hoursOnSocialMedia">
+          <select id="hoursOnSocialMedia" name="hoursOnSocialMedia" required>
             <option selected disabled></option>
             <option value="Less than an Hour">Less than an Hour</option>
             <option value="Between 1 and 2 hours">1 - 2 hours</option>
@@ -648,7 +650,43 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script>
+    function validateForm() {
+      // Get all checkboxes with name "organizationType"
+      let orgCheckboxes = document.getElementsByName("organizationType");
+      let platCheckboxes = document.getElementsByName("platformName");
 
+      // Check if at least one checkbox is checked
+      let orgIsChecked = false;
+      let platIsChecked = false;
+
+      for (let i = 0; i < orgCheckboxes.length; i++) {
+        if (orgCheckboxes[i].checked) {
+          orgIsChecked = true;
+          break;
+        }
+      }
+      for (let i = 0; i < platCheckboxes.length; i++) {
+        if (platCheckboxes[i].checked) {
+          platIsChecked = true;
+          break;
+        }
+      }
+
+      // Display an alert if no checkbox is checked and return false to prevent form submission
+      if (!orgIsChecked) {
+        alert("Please select at least one organization type.");
+        return false;
+      }
+      if (!platIsChecked) {
+        alert("Please select at least one platform type.");
+        return false;
+      }
+
+      // Continue with form submission if at least one checkbox is checked
+      return true;
+    }
+  </script>
 </body>
 
 </html>
