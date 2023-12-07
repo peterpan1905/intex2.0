@@ -74,9 +74,19 @@
         <tbody>
           <% for (let iCount = 0; iCount < myaccount.length; iCount++) { %>
             <tr>
-              <td><%= myaccount[iCount].username %></td>
-              <td><%= myaccount[iCount].password %></td>
-            </tr>
+                <td><%= myaccount[iCount].username %></td>
+                <td><%= myaccount[iCount].password %></td>
+                <td style="text-align: center;">
+                    <form action="/edituser" method="GET" style="display: inline;">
+                        <input type="hidden" name="editusername" value="<%= myaccount[iCount].username %>">
+                        <button type="submit">Edit</button>
+                    </form>  
+                    <form action="/deleteuser" method="POST" style="display: inline;">
+                        <input type="hidden" name="deleteusername" value="<%= myaccount[iCount].username %>">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>            
           <% } %>
      </tbody>
    </table>
