@@ -5,11 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<<<<<<< HEAD
-  <title>Data</title>
-=======
   <title>Account</title>
->>>>>>> main
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -27,63 +23,7 @@
   <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-<<<<<<< HEAD
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* Add a container to center the content */
-
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: #ffffff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    th, td {
-      border: 1px solid #dee2e6;
-      padding: 12px;
-      text-align: left;
-    }
-
-    thead {
-      background-color: #007bff;
-      color: white;
-    }
-
-    tbody {
-      font-size: 14px;
-    }
-
-    tbody tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
-
-    tbody tr:hover {
-      background-color: #e2e6ea;
-    }
-
-    th, td {
-      padding: 15px;
-    }
-
-    /* Responsive styles */
-    @media (max-width: 767px) {
-      table {
-        overflow-x: auto;
-      }
-    }
-  </style>
-=======
   
->>>>>>> main
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
@@ -110,11 +50,7 @@
             <li><a href="/info">Info</a></li>
             <li><a href="/survey">Survey</a></li>
             <li><a href="/dashboard">Dashboard</a></li>
-<<<<<<< HEAD
-            <li><a href="/data2">Data</a></li>
-=======
             <li><a href="/data">Data</a></li>
->>>>>>> main
             <li><a href="/login">Login</a></li>
             <li><a href="/account">Account</a></li>
           </ul>
@@ -126,23 +62,6 @@
     <!-- End Header -->
 
   <br>
-<<<<<<< HEAD
-
-    <!-- <form action="/accountfiltered" method="get" id="filterform" name="filterform" style="margin: 65px;">
-        <label for="usernameSelect"><b>Select User:</b></label>
-        <select id="usernameSelect" name="usernameSelect" onchange="loadSelectedSurvey()">
-            <option>Select a User</option>
-            <% //for (let iCount = 1; iCount < myaccount.length; iCount++) { %>
-                <option value="<%= //myaccount[iCount].username %>">
-                <%= //myaccount[iCount].username %>
-                </option>
-            <% //} %>
-        </select>
-        <input type="button" value="Edit" action="/edit" method="get">
-        <input type="button" value="Delete" action="/delete" method="post">
-    </form> -->
-=======
->>>>>>> main
    
     <div class="container">
       <table>
@@ -155,7 +74,6 @@
         <tbody>
           <% for (let iCount = 0; iCount < myaccount.length; iCount++) { %>
             <tr>
-<<<<<<< HEAD
                 <td><%= myaccount[iCount].username %></td>
                 <td><%= myaccount[iCount].password %></td>
                 <td style="text-align: center;">
@@ -169,11 +87,6 @@
                     </form>
                 </td>
             </tr>            
-=======
-              <td><%= myaccount[iCount].username %></td>
-              <td><%= myaccount[iCount].password %></td>
-            </tr>
->>>>>>> main
           <% } %>
      </tbody>
    </table>

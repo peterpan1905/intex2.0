@@ -22,7 +22,7 @@ const knex = require("knex")({
     connection: {
         host : process.env.RDS_HOSTNAME || "localhost",
         user : process.env.RDS_USERNAME || "postgres",
-        password : process.env.RDS_PASSWORD || "buddy",
+        password : process.env.RDS_PASSWORD || "admin",
         database : process.env.RDS_DB_NAME || "intex",
         port : process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
@@ -48,11 +48,7 @@ app.get("/data", checkLoggedIn, (req, res) => {
         res.render("data", { mysurvey : survey})})
  });
 
-<<<<<<< HEAD
- app.get("/data2filtered", (req, res) => {
-=======
  app.get("/datafiltered", (req, res) => {
->>>>>>> main
     let surveynum = req.query.surveySelect;
   
     knex.select()
@@ -75,7 +71,14 @@ app.get("/data", checkLoggedIn, (req, res) => {
   app.get("/create", checkLoggedIn, (req, res) => {
     let errorMessage = null;
     let successMessage = null;
-    res.render("create", { errorMessage, successMessage });
+    let loggedInUsername = req.session.username;
+    
+    if(loggedInUsername === "admin"){
+        res.render("create", {errorMessage, successMessage});
+    }
+    else{
+        res.render("login");
+    }
 });
 
 app.post('/create', async (req, res) => {
@@ -138,13 +141,6 @@ app.get("/login", (req,res) => {
     res.render("login");
 });
 
-<<<<<<< HEAD
-// app.get("/data", (req, res) => {
-
-//     });
-
-=======
->>>>>>> main
 app.post("/login", async (req, res) => {
     if (req.session.loggedIn) {
         res.send("You are already logged in")
@@ -240,13 +236,6 @@ app.post("/addRecord", async (req, res) => {
 });
 
 app.get("/account", checkLoggedIn, (req, res) => {
-    let distinctAccountNum = knex("logins").select("username");
-
-    knex.select().from("logins").then( account => {
-        res.render("account", { myaccount : account, accountSelections: distinctAccountNum})})
- });
-
-app.get("/account", checkLoggedIn, (req, res) => {
     const loggedInUsername = req.session.username; // Assuming you have the username stored in the session
 
     if (loggedInUsername === "admin") {
@@ -261,8 +250,6 @@ app.get("/account", checkLoggedIn, (req, res) => {
         });
     }
 });
-
-
 
 app.get("/edituser", (req, res) => {
     let currentUsername = req.query.editusername;
@@ -302,7 +289,7 @@ app.post("/updateuser", (req, res) => {
       .where("username", "=", currentUsername)
       .update(updateFields)
       .then(() => {
-        res.redirect("account"); // Redirect to the home page or another appropriate location
+        res.redirect("/logout"); // Redirect to the home page or another appropriate location
       })
       .catch(error => {
         // Handle error
