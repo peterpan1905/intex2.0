@@ -52,7 +52,7 @@
             <li><a href="/info">Info</a></li>
             <li><a href="/survey">Survey</a></li>
             <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/data2">Data</a></li>
+            <li><a href="/data">Data</a></li>
             <li><a href="/login">Login</a></li>
             <li><a href="/account">Account</a></li>
           </ul>
@@ -64,7 +64,7 @@
     <!-- End Header -->
 
   <br>
-    <form action="/data2filtered" method="get" id="filterform" name="filterform" style="margin: 20px;">
+    <form action="/datafiltered" method="get" id="filterform" name="filterform" style="margin: 20px;">
         <label for="surveySelect"><b>Select Survey:</b></label>
         <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
             <option>Select a Survey</option>
@@ -80,8 +80,8 @@
     
     <script>
         function clearSelection() {
-            // Redirect to /data2 route
-            window.location.href = '/data2';
+            // Redirect to /data route
+            window.location.href = '/data';
         }
     </script>
     </form>

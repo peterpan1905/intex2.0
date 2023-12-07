@@ -37,7 +37,7 @@ function checkLoggedIn (req, res, next) {
     }
 }
 
-app.get("/data2", checkLoggedIn, (req, res) => {
+app.get("/data", checkLoggedIn, (req, res) => {
     // let distinctSurveyNum = knex("survey").select("survey_number");
 
     knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
@@ -45,10 +45,10 @@ app.get("/data2", checkLoggedIn, (req, res) => {
     .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
     .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
     .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
-        res.render("data2", { mysurvey : survey})})
+        res.render("data", { mysurvey : survey})})
  });
 
- app.get("/data2filtered", (req, res) => {
+ app.get("/datafiltered", (req, res) => {
     let surveynum = req.query.surveySelect;
   
     knex.select()
@@ -60,7 +60,7 @@ app.get("/data2", checkLoggedIn, (req, res) => {
       .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
       .where("u.survey_number", '=', surveynum)
       .then(survey => {
-        res.render("data2", { mysurvey: survey });
+        res.render("data", { mysurvey: survey });
       })
       .catch(error => {
         console.error('Error executing the query:', error);
@@ -133,10 +133,6 @@ app.get("/login", (req,res) => {
     res.render("login")
 });
 
-app.get("/data", (req, res) => {
-
-    });
-
 app.post("/login", async (req, res) => {
     if (req.session.loggedIn) {
         res.send("You are already logged in")
@@ -150,7 +146,7 @@ app.post("/login", async (req, res) => {
             if (password === dbUser.password) {
                 req.session.loggedIn = true;
                 req.session.username = username;
-                res.redirect("data2");
+                res.redirect("data");
             } else {
                 res.redirect("/login"); // possibly pass a variable containing a string alerting the client the login was invalid
             }
