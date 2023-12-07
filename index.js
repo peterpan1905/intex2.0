@@ -318,9 +318,6 @@ app.post("/updateuser", (req, res) => {
         });
   });
 
- app.get("/data", checkLoggedIn, (req, res) => {
-
-
 // route to render data.ejs with a table of all the surveys submitted
 app.get("/data", checkLoggedIn, (req, res) => {
     knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
