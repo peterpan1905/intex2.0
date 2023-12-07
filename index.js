@@ -160,8 +160,9 @@ app.post("/addRecord", async (req, res) => {
         general_sleep: req.body.generalSleepRating,
     });
 
-    const aSurveyNumbers = await knex("survey").select(knex.raw("max(survey_number) as max_survey_number"));
-    const survey_number = aSurveyNumbers[0].max_survey_number
+    const survey_number = await knex("survey").select(knex.raw("cast(max(survey_number) as INT) as max_survey_number")).first();
+    const maxSurveyNumber = survey_number.max_survey_number;
+    // const survey_number = aSurveyNumbers[0].max_survey_number
     const currentTimestamp = new Date();
     const targetTimezone = 'en-US';
     const formattedTimestamp = currentTimestamp.toLocaleString(targetTimezone, {
@@ -175,6 +176,7 @@ app.post("/addRecord", async (req, res) => {
     })
     
     await knex("user").insert({
+        survey_number: maxSurveyNumber,
         location: "Provo",
         timestamp: formattedTimestamp,
         age: req.body.age,
@@ -184,19 +186,19 @@ app.post("/addRecord", async (req, res) => {
         
     });
     let aPlatformName = [req.body.platformName];
-    aPlatformName.forEach(platform => {
+    aPlatformName.forEach(async platform => {
         if (platform != null){
-                knex("user_platform").insert({
-                    survey_number: survey_number,
+                await knex("user_platform").insert({
+                    survey_number: maxSurveyNumber,
                     platform_number: platform
             });
         }
     });
     let aOrganizationType = [req.body.organizationType];
-    aOrganizationType.forEach(organization => {
+    aOrganizationType.forEach(async organization => {
         if (organization != null){
-            knex("user_organization").insert({
-                survey_number: survey_number,
+            await knex("user_organization").insert({
+                survey_number: maxSurveyNumber,
                 organization_number: organization
             });
         }
@@ -210,6 +212,7 @@ app.get("/account", checkLoggedIn, (req, res) => {
     knex.select().from("logins").then( account => {
         res.render("account", { myaccount : account, accountSelections: distinctAccountNum})})
  });
+
  app.get("/data", checkLoggedIn, (req, res) => {
     // let distinctSurveyNum = knex("survey").select("survey_number");
 
@@ -240,5 +243,5 @@ app.get("/account", checkLoggedIn, (req, res) => {
         res.status(500).send('Internal Server Error');
       });
   });
-  
+
 app.listen(port, () => console.log("Server is running"));
