@@ -55,7 +55,6 @@ app.get("/create", checkLoggedIn, (req, res) => {
 app.post('/create', async (req, res) => {
     const { username, password, confirmPassword } = req.body;
     let errorMessage = null;
-    let successMessage = null;
 
     if (password !== confirmPassword) {
         errorMessage = 'Passwords need to match';
@@ -65,11 +64,14 @@ app.post('/create', async (req, res) => {
             errorMessage = 'That username is already being used';
         } else {
             await knex("logins").insert({ username: username, password: password });
-            successMessage = 'User has been created successfully'
         }
     }
-    if (req.method === "POST") {
-        res.redirect('/account');
+    if (errorMessage) {
+        res.render('create', { errorMessage: errorMessage, loggedIn: req.session.loggedIn })
+    } else {
+        if (req.method === "POST") {
+            res.redirect('/account');
+        }
     }
 });
 
@@ -114,13 +116,13 @@ app.post("/login", async (req, res) => {
     let loginMessage = null;
     if (req.session.loggedIn) {
         loginMessage = "You are already logged in.";
-        res.render("login", { loginMessage: loginMessage })
+        res.render("login", { loginMessage: loginMessage, loggedIn: req.session.loggedIn })
     } else {
         const { username, password } = req.body;
         const dbUser = await knex("logins").select().where("username", username).first();
         if (!dbUser) {
             loginMessage = "Incorrect username."
-            return res.render("login", { loginMessage: loginMessage });
+            return res.render("login", { loginMessage: loginMessage, loggedIn: req.session.loggedIn });
         }
         try {
             if (password === dbUser.password) {
@@ -129,7 +131,7 @@ app.post("/login", async (req, res) => {
                 res.redirect("data");
             } else {
                 loginMessage = "Incorrect password."
-                res.render("login", { loginMessage: loginMessage });
+                res.render("login", { loginMessage: loginMessage, loggedIn: req.session.loggedIn });
             }
         } catch (error) {
             console.error('Login error:', error.message);
