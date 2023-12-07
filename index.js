@@ -192,7 +192,7 @@ app.post("/addRecord", async (req, res) => {
         age: req.body.age,
         gender: req.body.gender,
         relationship_status: req.body.relationshipStatus,
-        occupation_status: req.body.occupation_status,
+        occupation_status: req.body.occupation,
         
     });
     let aPlatformName = [req.body.platformName];
