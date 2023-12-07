@@ -58,24 +58,29 @@ app.post('/create', async (req, res) => {
     let errorMessage = null;
     let successMessage = null;
 
-    if (password !== confirmPassword) {
-        errorMessage = 'Passwords need to match';
+    // Check if the username already exists
+    const dbUser = await knex("logins").select().where('username', '=', username);
+
+    if (dbUser.length > 0) {
+        // Username already exists
+        errorMessage = 'That username is already being used';
     } else {
-        const dbUser = await knex("logins").select().where('username', '=', username);
-        if (dbUser.length > 0) {
-            errorMessage = 'That username is already being used';
+        // Continue with the user creation logic
+        if (password !== confirmPassword) {
+            errorMessage = 'Passwords need to match';
         } else {
             await knex("logins").insert({ username: username, password: password });
             successMessage = 'User has been created successfully'
         }
     }
-    if (req.method === "POST") {
-        res.render('create', { errorMessage, successMessage });
-    }
+
+    // Render the create page with the appropriate messages
+    res.render('create', { errorMessage, successMessage, loggedIn: req.session.loggedIn });
 });
 
+
 app.get("/", (req, res) => {
-    res.render("landingPage");
+    res.render("landingPage", {loggedIn: req.session.loggedIn});
 });
 
 app.get("/landingPage", (req, res) => {
@@ -213,22 +218,21 @@ app.post("/addRecord", async (req, res) => {
 });
 
 app.get("/account", checkLoggedIn, (req, res) => {
-    const loggedInUsername = req.session.username; // Assuming you have the username stored in the session
-
-    if (loggedInUsername === "admin") {
+    tempusername = req.session.username
+    if (tempusername === "admin") {
         // Display all data for the admin
         knex.select().from("logins").then(user => {
-            res.render("account", { myaccount: user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
+            res.render("account", { dbUser : user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
         });
     } else {
         // Display data only for the specific username
         knex.select().from("logins").where("username", loggedInUsername).then(user => {
-            res.render("account", { myaccount: user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
+            res.render("account", { dbUser : user, loggedIn: req.session.loggedIn, loggedInUsername: req.session.username });
         });
     }
 });
 
-app.get("/edituser", (req, res) => {
+app.get("/edituser", checkLoggedIn, (req, res) => {
     let currentUsername = req.query.editusername;
   
     // Fetch the current user's information
@@ -266,7 +270,7 @@ app.post("/updateuser", (req, res) => {
       .where("username", "=", currentUsername)
       .update(updateFields)
       .then(() => {
-        res.redirect("/logout"); // Redirect to the home page or another appropriate location
+        res.redirect("/account"); // Redirect to the home page or another appropriate location
       })
       .catch(error => {
         // Handle error
@@ -276,15 +280,15 @@ app.post("/updateuser", (req, res) => {
   });   
 
   app.post("/deleteuser", (req, res) => {
-    let currentUsername = req.body.deleteusername;
-    let loggedInUsername = req.session.username; // Assuming you store the logged-in username in the session
+    let deleteUsername = req.body.deleteusername;
+    let currentUsername = req.session.username;
 
     knex("logins")
-        .where("username", "=", currentUsername)
+        .where("username", "=", deleteUsername)
         .delete()
         .then(() => {
             // Check if the deleted account is the one logged in
-            if (currentUsername === loggedInUsername) {
+            if (currentUsername === deleteUsername) {
                 res.redirect("/logout"); // Redirect to the login page
             } else {
                 res.redirect("account"); // Redirect to the home page or another appropriate location
