@@ -110,7 +110,8 @@ app.get("/dashboard", (req, res) => {
 
 app.get("/login", (req,res) => {
     const LOGIN = req.session && req.session.loggedIn;
-    res.render("login");
+    let loginMessage = null;
+    res.render("login", { loginMessage: loginMessage });
 });
 
 app.post("/login", async (req, res) => {
