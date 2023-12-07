@@ -233,4 +233,11 @@ app.post("/addRecord", async (req, res) => {
 });
 
 
+app.get("/account", checkLoggedIn, (req, res) => {
+    let distinctAccountNum = knex("logins").select("username");
+
+    knex.select().from("logins").then( account => {
+        res.render("account", { myaccount : account, accountSelections: distinctAccountNum})})
+ });
+
 app.listen(port, () => console.log("Server is running"));
