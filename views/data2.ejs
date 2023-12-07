@@ -113,13 +113,13 @@
     <!-- End Header -->
 
   <br>
-    <form action="/data2/filtered" method="get" id="filterform" name="filterform" style="margin: 65px;">
+    <form action="/data2filtered" method="get" id="filterform" name="filterform" style="margin: 65px;">
         <label for="surveySelect"><b>Select Survey:</b></label>
         <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
             <option>Select a Survey</option>
-            <% for (let iCount = 0; iCount < surveySelections.length; iCount++) { %>
-                <option value="<%= surveySelections[iCount].survey_number %>">
-                Survey <%= surveySelections[iCount].survey_number %>
+            <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
+                <option value="<%= mysurvey[iCount].survey_number %>">
+                Survey <%= mysurvey[iCount].survey_number %>
                 </option>
             <% } %>
         </select>
