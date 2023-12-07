@@ -9,7 +9,7 @@ let app = express();
 let path = require("path");  
 const { render } = require("ejs");
 
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 4000;
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
@@ -50,7 +50,7 @@ app.post("/login", async (req, res) => {
             if (password === dbUser.password) {
                 req.session.loggedIn = true;
                 req.session.username = username;
-                res.redirect("data2");
+                res.redirect("create");
             } else {
                 res.redirect("/login"); // possibly pass a variable containing a string alerting the client the login was invalid
             }
@@ -61,7 +61,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.post("/logout", (req, res) => {
+app.get("/logout", (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             console.error('Error destroying session:', err);
@@ -86,8 +86,32 @@ app.get("/data2", checkLoggedIn, async (req, res) => {
     // }
 });
 
-app.get("/create", checkLoggedIn, async (req, res) => {
-    res.render("create");
+app.get("/create", checkLoggedIn, (req, res) => {
+    let successMessage = "Welcome to the creation page";
+    let errorMessage = null;
+    res.render('create', { successMessage: successMessage });
+});
+
+app.post('/create', checkLoggedIn, async (req, res) => {
+    const { username, password, confirmPassword } = req.body;
+    let errorMessage = null;
+    let successMessage = null;
+
+    if (password !== confirmPassword) {
+        errorMessage = 'Passwords need to match';
+    } else {
+        const dbUser = await knex("logins").select().where('username', '=', username);
+        if (dbUser.length > 0) {
+            errorMessage = 'That username is already being used';
+        } else {
+            await knex("logins").insert({ username: username, password: password });
+            successMessage = 'User has been created successfully'
+        }
+    }
+    if (req.method === "POST") {
+        // res.send(successMessage);
+        res.render('create', { errorMessage, successMessage });
+    }
 });
 
 app.get("/", (req, res) => {
@@ -126,18 +150,6 @@ app.get('/users', (res, req) => {
     
 });
 
-app.post('/users/create', async (res, req) => {
-    try {
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
-        // const user = { username: req.body.username, password: hashedPassword }; I don't think I need this when inserting into a database
-        await knex("users").insert({ username: req.body.username, password: hashedPassword})
-        res.status(201).send();
-    } catch {
-        res.status(500).send();
-    }
-});
-
 app.post("/addRecord", async (req, res) => {
     await knex("survey").insert({
         media_user: req.body.socialMediaUser,
@@ -170,7 +182,6 @@ app.post("/addRecord", async (req, res) => {
     });
 
     await knex("user").insert({
-        // survey_number: survey_number,
         timestamp: currentTimestamp,
         age: req.body.age,
         gender: req.body.gender,

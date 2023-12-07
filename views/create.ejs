@@ -1,65 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create User</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        .login-container {
-            max-width: 300px;
-            margin: 100px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-container h2 {
-            margin-bottom: 20px;
-        }
-
-        .login-container img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px; /* Optional margin for spacing */
-        }
-
-        .login-container label {
-            display: block;
-            text-align: left;
-            margin-bottom: 8px;
-        }
-
-        .login-container input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-        }
-
-        .login-container button {
-            background-color:  rgb(0,164,224);
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        
-    </style>
-    
-</head>
-<!DOCTYPE html>
-<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -93,9 +33,8 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-</head>
 
-<body style="background-color: #f4f4f4">
+</head>
   <!-- ======= Header ======= -->
   <header id="header" class="d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
@@ -117,25 +56,45 @@
       </nav><!-- .navbar -->
 
     </div>
-    <script>        
-        function logOut()
-                {
-                    window.location.href = '/logout';        
-                }
-    </script>
   </header><!-- End Header -->
-<body>
+<body onload="messageCheck()">
     <div class="login-container">
         <h2>Create User</h2>
         <form action="/create" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" onkeyup="check()" required>
             <label for="confirmPassword">Confirm password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" required>
-            <input type="submit" value="Submit">
+            <input type="password" id="confirmPassword" name="confirmPassword" onkeyup="check()" required>
+            <span id="message"></span>
+            <input type="submit" value="Create User">
         </form>
     </div>
+    <script>       
+        // let data = {};
+        // if (locals && locals.data) {
+        //     data = JSON.stringify(locals.data)
+        // }
+        function logOut()
+            {
+                window.location.href = '/logout';        
+            }
+        function check() 
+            {
+                if (document.getElementById('password').value ===
+                    document.getElementById('confirmPassword').value) {
+                    document.getElementById('message').style.color = 'green';
+                    document.getElementById('message').innerHTML = 'Passwords match';
+                } else {
+                    document.getElementById('message').style.color = 'red';
+                    document.getElementById('message').innerHTML = 'Passwords don\'t match';
+                }
+            }
+        function messageCheck() {
+            alert("message check is working");
+            alert(errorMessage || successMessage);
+        }
+    </script>
 </body>
 </html>
