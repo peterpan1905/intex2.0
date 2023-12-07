@@ -87,15 +87,15 @@ app.get("/data2", checkLoggedIn, async (req, res) => {
 });
 
 app.get("/create", checkLoggedIn, (req, res) => {
-    let successMessage = "Welcome to the creation page";
-    let errorMessage = null;
-    res.render('create', { successMessage: successMessage });
+    let errorMessage = "";
+    let successMessage = "";
+    res.render('create', { errorMessage: errorMessage, successMessage: successMessage });
 });
 
 app.post('/create', checkLoggedIn, async (req, res) => {
     const { username, password, confirmPassword } = req.body;
-    let errorMessage = null;
-    let successMessage = null;
+    let errorMessage = "";
+    let successMessage = "";
 
     if (password !== confirmPassword) {
         errorMessage = 'Passwords need to match';
@@ -109,8 +109,7 @@ app.post('/create', checkLoggedIn, async (req, res) => {
         }
     }
     if (req.method === "POST") {
-        // res.send(successMessage);
-        res.render('create', { errorMessage, successMessage });
+        res.render('create', { errorMessage: errorMessage, successMessage: successMessage });
     }
 });
 

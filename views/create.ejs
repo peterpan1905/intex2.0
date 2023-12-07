@@ -57,7 +57,8 @@
 
     </div>
   </header><!-- End Header -->
-<body onload="messageCheck()">
+<body>
+    <p><% if (errorMessage) {return errorMessage} else if (successMessage) {return successMessage} %></p>
     <div class="login-container">
         <h2>Create User</h2>
         <form action="/create" method="post">
@@ -72,10 +73,6 @@
         </form>
     </div>
     <script>       
-        // let data = {};
-        // if (locals && locals.data) {
-        //     data = JSON.stringify(locals.data)
-        // }
         function logOut()
             {
                 window.location.href = '/logout';        
@@ -93,7 +90,12 @@
             }
         function messageCheck() {
             alert("message check is working");
-            alert(errorMessage || successMessage);
+            // if (errorMessage) {
+            //     alert(errorMessage);
+            // } else if (successMessage) {
+            //     alert(successMessage)
+            // }
+            alert(errorMessage);
         }
     </script>
 </body>
