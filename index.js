@@ -198,7 +198,6 @@ app.post("/addRecord", async (req, res) => {
     })
     
     await knex("user").insert({
-        // survey_number: survey_number,
         location: "Provo",
         timestamp: currentTimestamp,
         age: req.body.age,
