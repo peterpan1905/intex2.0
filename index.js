@@ -30,10 +30,11 @@ const knex = require("knex")({
 }); 
 
 function checkLoggedIn (req, res, next) {
+    let loginMessage = "You need to login to view that page."
     if (req.session.loggedIn) {
         next();
     } else {
-        res.redirect("/login"); //possibly add a variable to alert the client that they need to login to gain access
+        res.redirect("/login"); //possibly add a variable to alert the client that they need to login to gain access, { loginMessage: loginMessage }
     }
 }
 
@@ -105,13 +106,16 @@ app.get("/login", (req,res) => {
 });
 
 app.post("/login", async (req, res) => {
+    let loginMessage = "";
     if (req.session.loggedIn) {
-        res.send("You are already logged in")
+        loginMessage = "You are already logged in.";
+        res.render("login", { loginMessage: loginMessage })
     } else {
         const { username, password } = req.body;
         const dbUser = await knex("logins").select().where("username", username).first();
         if (!dbUser) {
-            return res.status(400).send("Cannot find user");
+            loginMessage = "Incorrect username."
+            return res.render("login", { loginMessage: loginMessage });
         }
         try {
             if (password === dbUser.password) {
@@ -119,7 +123,8 @@ app.post("/login", async (req, res) => {
                 req.session.username = username;
                 res.redirect("data");
             } else {
-                res.redirect("/login"); // possibly pass a variable containing a string alerting the client the login was invalid
+                loginMessage = "Incorrect password."
+                res.render("login", { loginMessage: loginMessage });
             }
         } catch (error) {
             console.error('Login error:', error.message);
