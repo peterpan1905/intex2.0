@@ -134,13 +134,16 @@
         }
         function check() 
         {
-            if (document.getElementById('password').value ===
-                document.getElementById('confirmPassword').value) {
-                document.getElementById('message').style.color = 'green';
-                document.getElementById('message').innerHTML = 'Passwords match';
+            if (document.getElementById('password').value == null && document.getElementById('confirmPassword').value == null) {
+                return;
             } else {
-                document.getElementById('message').style.color = 'red';
-                document.getElementById('message').innerHTML = 'Passwords don\'t match';
+                if (document.getElementById('password').value === document.getElementById('confirmPassword').value) {
+                    document.getElementById('message').style.color = 'green';
+                    document.getElementById('message').innerHTML = 'Passwords match';
+                } else {
+                    document.getElementById('message').style.color = 'red';
+                    document.getElementById('message').innerHTML = 'Passwords don\'t match';
+                }
             }
         }
         function createMessage() 
