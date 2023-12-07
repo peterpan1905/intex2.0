@@ -114,7 +114,7 @@
         Your honest responses to the following simple questions will provide valuable insights. Thank you for contributing to our research regarding the impact of social media on mental well-being.</p><br>
         <hr>
         <br>
-        <form action="/addRecord" method="post" id="surveyForm" onsubmit="validateForm()">
+        <form action="/addRecord" method="post" id="surveyForm" onsubmit="return validateForm()">
           <label for="age">1. Select your age: </label>
           <br>
           <select id="age" name="age" required>
@@ -685,14 +685,12 @@
       if (!orgIsChecked) {
         alert("Please select at least one organization type.");
         return false;
-      }
-      if (!platIsChecked) {
+      } else if (!platIsChecked) {
         alert("Please select at least one platform type.");
         return false;
+      } else {
+        return true;
       }
-
-      // Continue with form submission if at least one checkbox is checked
-      return true;
     }
   </script>
 </body>
