@@ -51,8 +51,15 @@
           <li><a href="/info">Info</a></li>
           <li><a href="/survey">Survey</a></li>
           <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/data">Data</a></li>
-          <li><a href="/login">Login</a></li>
+          <% if (loggedIn) {%>
+            <li><a href="/data">Data</a></li>
+          <%}%>
+          <% if (loggedIn) { %>
+            <li><a href="/logout">Logout</a></li>
+        <% } else {%> <li><a href="/login">Login</a></li> <%}%> 
+          <% if (loggedIn) { %>
+            <li><a href="/account">Account</a></li>
+        <% } %> 
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->

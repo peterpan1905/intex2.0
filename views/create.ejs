@@ -35,13 +35,7 @@
   ======================================================== -->
 
   <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
+        
 
         .login-container {
             max-width: 300px;
@@ -100,13 +94,20 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="/landingPage">Home</a></li>
-          <li><a href="/info">Info</a></li>
-          <li><a href="/survey">Survey</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="#" onclick="logout()">Logout</a></li>
-          <li><a href="/data">Data</a></li>
-        </ul>
+            <li><a href="/landingpage">Home</a></li>
+            <li><a href="/info">Info</a></li>
+            <li><a href="/survey">Survey</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <% if (loggedIn) {%>
+              <li><a href="/data">Data</a></li>
+            <%}%>
+            <% if (loggedIn) { %>
+              <li><a href="/logout">Logout</a></li>
+          <% } else {%> <li><a href="/login">Login</a></li> <%}%> 
+            <% if (loggedIn) { %>
+              <li><a href="/account">Account</a></li>
+          <% } %> 
+          </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
 
