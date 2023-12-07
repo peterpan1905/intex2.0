@@ -3,21 +3,23 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { platform } = require("os");
 const session = require("express-session");
+let path = require("path");  
 
 let app = express();
 
-let path = require("path");  
 const { render } = require("ejs");
 
 const port = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
-app.use(express.urlencoded({extended: true})); // gets the .value of tags in a form
+
+app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(session({ secret: 'BananaPancakes', resave: true, saveUninitialized: true }));
 app.use(express.static('public'));
 
+// Connect to postgres database
 const knex = require("knex")({
     client: "pg",
     connection: {
@@ -30,15 +32,17 @@ const knex = require("knex")({
     }
 }); 
 
+// function to allow access to blocked pages if someone is logged in
 function checkLoggedIn (req, res, next) {
     let loginMessage = "You need to login to view that page."
     if (req.session.loggedIn) {
         next();
     } else {
-        res.redirect("/login", { loginMessage: loginMessage }); //possibly add a variable to alert the client that they need to login to gain access, { loginMessage: loginMessage }
+        res.redirect("/login", { loginMessage: loginMessage });
     }  
 }
 
+// route to display create.ejs
 app.get("/create", checkLoggedIn, (req, res) => {
     let errorMessage = null;
     let successMessage = null;
@@ -52,6 +56,7 @@ app.get("/create", checkLoggedIn, (req, res) => {
     }
 });
 
+// route to create a new user and save the username and password to the logins table
 app.post('/create', async (req, res) => {
     const { username, password, confirmPassword } = req.body;
     let errorMessage = null;
@@ -73,43 +78,49 @@ app.post('/create', async (req, res) => {
     }
 });
 
+// default rout to display landing page
 app.get("/", (req, res) => {
     res.render("landingPage");
 });
 
+// route to display landing page
 app.get("/landingPage", (req, res) => {
     res.render("landingPage", {loggedIn : req.session.loggedIn});
 });
 
+// route to send contact information from the form on the home (/landingPage) and info pages
 app.post("/contact", (req, res) => {
     const { name, email, subject, message } = req.body;
 
     // Process the form data as needed (e.g., send emails, save to a database)
 
-    // For now, just log the form data
     console.log('Form Data:', { name, email, subject, message });
 
-    // Respond to the client
     res.send('Form submission successful!');
 });
 
+// route to display info.ejs
 app.get("/info", (req,res) => {
     res.render("info", {loggedIn: req.session.loggedIn});
 });
 
+// route to dispaly survey
 app.get("/survey", (req, res) => {
     res.render("survey", {loggedIn: req.session.loggedIn});
 });
 
+// route to display the tableau dashboard
 app.get("/dashboard", (req, res) => {
     res.render("dashboard", {loggedIn: req.session.loggedIn});
 });
 
+// route to display the login page
 app.get("/login", (req,res) => {
     let loginMessage = null;
     res.render("login", { loginMessage: loginMessage, loggedIn: req.session.loggedIn });
 });
 
+// route to log the user in and send them to data.ejs or display an error message if they put the wrong username or password
 app.post("/login", async (req, res) => {
     let loginMessage = null;
     if (req.session.loggedIn) {
@@ -138,6 +149,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// route to logout the user
 app.get("/logout", (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -147,7 +159,9 @@ app.get("/logout", (req, res) => {
     })
 });
 
+// route to add a survey to our postrgres databases. Once submitted, it renders survey.ejs. Table names: "survey", "user", "user_platform", "user_organization"
 app.post("/addRecord", async (req, res) => {
+    // insert information to the "survey" table
     await knex("survey").insert({
         media_user: req.body.socialMediaUser,
         hours_on_media: req.body.hoursOnSocialMedia,
@@ -165,9 +179,8 @@ app.post("/addRecord", async (req, res) => {
         general_sleep: req.body.generalSleepRating,
     });
 
-    const survey_number = await knex("survey").select(knex.raw("cast(max(survey_number) as INT) as max_survey_number")).first();
-    const maxSurveyNumber = survey_number.max_survey_number;
-    // const survey_number = aSurveyNumbers[0].max_survey_number
+    const survey_number = await knex("survey").select(knex.raw("cast(max(survey_number) as INT) as max_survey_number")).first(); // retrieve the most recent survey number
+    const maxSurveyNumber = survey_number.max_survey_number; // set survey_number equal to the most recent survey number submitted. This variable will be used in the other three tables (other than the "survey" table where the survey number is auto generated
     const currentTimestamp = new Date();
     const targetTimezone = 'en-US';
     const formattedTimestamp = currentTimestamp.toLocaleString(targetTimezone, {
@@ -180,6 +193,7 @@ app.post("/addRecord", async (req, res) => {
     second: '2-digit',
     })
     
+    // insert the survey information to the "user" table
     await knex("user").insert({
         survey_number: maxSurveyNumber,
         location: "Provo",
@@ -190,6 +204,8 @@ app.post("/addRecord", async (req, res) => {
         occupation_status: req.body.occupation,
         
     });
+
+    // insert the survey information to the "user_platform" table to keep track of all the platforms a user selected as the ones they use
     let aPlatformName = [req.body.platformName];
     aPlatformName.forEach(async platform => {
         if (platform != null){
@@ -199,6 +215,8 @@ app.post("/addRecord", async (req, res) => {
             });
         }
     });
+
+    // insert the survey information to the "user_organization" table to keep track of all the organizations a user selects as being affiliated with
     let aOrganizationType = [req.body.organizationType];
     aOrganizationType.forEach(async organization => {
         if (organization != null){
@@ -211,8 +229,9 @@ app.post("/addRecord", async (req, res) => {
     res.render("survey")
 });
 
+// route to render account.ejs, but only when the user is logged in (using the checkLoggedIn function)
 app.get("/account", checkLoggedIn, (req, res) => {
-    const loggedInUsername = req.session.username; // Assuming you have the username stored in the session
+    const loggedInUsername = req.session.username;
 
     if (loggedInUsername === "admin") {
         // Display all data for the admin
@@ -227,6 +246,7 @@ app.get("/account", checkLoggedIn, (req, res) => {
     }
 });
 
+// render the edituser.ejs if the user is logged in
 app.get("/edituser", (req, res) => {
     let currentUsername = req.query.editusername;
   
@@ -242,6 +262,7 @@ app.get("/edituser", (req, res) => {
     });
 });  
 
+// update user username and password
 app.post("/updateuser", (req, res) => {
     let currentUsername = req.body.currentUsername;
     let newUsername = req.body.newUsername;
@@ -265,7 +286,7 @@ app.post("/updateuser", (req, res) => {
       .where("username", "=", currentUsername)
       .update(updateFields)
       .then(() => {
-        res.redirect("/logout"); // Redirect to the home page or another appropriate location
+        res.redirect("/logout"); // Redirect to logout route
       })
       .catch(error => {
         // Handle error
@@ -274,56 +295,58 @@ app.post("/updateuser", (req, res) => {
       });
   });   
 
-  app.post("/deleteuser", (req, res) => {
+// route to delete a username
+app.post("/deleteuser", (req, res) => {
     let currentUsername = req.body.deleteusername;
-    let loggedInUsername = req.session.username; // Assuming you store the logged-in username in the session
+    let loggedInUsername = req.session.username;
 
     knex("logins")
-        .where("username", "=", currentUsername)
-        .delete()
-        .then(() => {
-            // Check if the deleted account is the one logged in
-            if (currentUsername === loggedInUsername) {
-                res.redirect("/logout"); // Redirect to the login page
-            } else {
-                res.redirect("account"); // Redirect to the home page or another appropriate location
-            }
-        })
-        .catch(error => {
-            // Handle error
-            console.error(error);
-            res.status(500).send("Internal Server Error");
-        });
-  });
+    .where("username", "=", currentUsername)
+    .delete()
+    .then(() => {
+        // Check if the deleted account is the one logged in
+        if (currentUsername === loggedInUsername) {
+            res.redirect("/logout"); // Redirect to the login page
+        } else {
+            res.redirect("account"); // Redirect to the home page or another appropriate location
+        }
+    })
+    .catch(error => {
+        // Handle error
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    });
+});
 
- app.get("/data", checkLoggedIn, (req, res) => {
-
+// route to render data.ejs with a table of all the surveys submitted
+app.get("/data", checkLoggedIn, (req, res) => {
     knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
     .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
     .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
     .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
     .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
         res.render("data", { mysurvey : survey, loggedIn: req.session.loggedIn})})
- });
+});
 
- app.get("/datafiltered", (req, res) => {
+// route to show only the selected survey results
+app.get("/datafiltered", (req, res) => {
     let surveynum = req.query.surveySelect;
-  
+
     knex.select()
-      .from("user as u")
-      .join('survey as s', 'u.survey_number', '=', 's.survey_number')
-      .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
-      .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
-      .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
-      .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
-      .where("u.survey_number", '=', surveynum)
-      .then(survey => {
-        res.render("data", { mysurvey: survey, loggedIn: req.session.loggedIn });
-      })
-      .catch(error => {
-        console.error('Error executing the query:', error);
-        res.status(500).send('Internal Server Error');
-      });
-  });
+    .from("user as u")
+    .join('survey as s', 'u.survey_number', '=', 's.survey_number')
+    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
+    .where("u.survey_number", '=', surveynum)
+    .then(survey => {
+    res.render("data", { mysurvey: survey, loggedIn: req.session.loggedIn });
+    })
+    .catch(error => {
+    console.error('Error executing the query:', error);
+    res.status(500).send('Internal Server Error');
+    });
+});
 
 app.listen(port, () => console.log("Server is running"));
