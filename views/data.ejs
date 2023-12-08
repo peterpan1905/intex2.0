@@ -70,18 +70,18 @@
 
   <br>
     <form action="/datafiltered" method="get" id="filterform" name="filterform" style="margin: 20px;">
-        <label for="surveySelect"><b>Select Survey:</b></label>
-        <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
-            <option>Select a Survey</option>
-            <% for (let iCount = 0; iCount < mysurvey.length; iCount++) { %>
-                <option value="<%= mysurvey[iCount].survey_number %>">
-                Survey <%= mysurvey[iCount].survey_number %>
-                </option>
-            <% } %>
-        </select>
-        <input type="submit" value="Submit">
-        <input type="button" value="Clear Selection" onclick="clearSelection()">
-    </form>
+    <label for="surveySelect"><b>Select Survey:</b></label>
+    <select id="surveySelect" name="surveySelect" onchange="loadSelectedSurvey()">
+        <option>Select a Survey</option>
+        <% dropdownOptions.forEach(surveyNumber => { %>
+            <option value="<%= surveyNumber %>">
+                Survey <%= surveyNumber %>
+            </option>
+        <% }); %>
+    </select>
+    <input type="submit" class="btn btn-primary" value="Submit" style="background-color: rgb(0,164,224); border: none">
+    <input type="button" class="btn btn-primary" value="Clear Selection" onclick="clearSelection()" style="background-color: rgb(0,164,224); border: none">
+  </form>
     
     <script>
         function clearSelection() {
