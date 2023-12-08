@@ -209,14 +209,6 @@ app.post("/addRecord", async (req, res) => {
 
     // insert the survey information to the "user_platform" table to keep track of all the platforms a user selected as the ones they use
     let aPlatformName = req.body.platformName;
-    // aPlatformName.forEach(async platform => {
-    //     if (platform != null){
-    //             await knex("user_platform").insert({
-    //                 survey_number: maxSurveyNumber,
-    //                 platform_number: platform
-    //         });
-    //     }
-    // });
     for (const platform of aPlatformName) {
         if (platform != null) {
             await knex("user_platform").insert({
@@ -228,14 +220,6 @@ app.post("/addRecord", async (req, res) => {
 
     // insert the survey information to the "user_organization" table to keep track of all the organizations a user selects as being affiliated with
     let aOrganizationType = req.body.organizationType;
-    // aOrganizationType.forEach(async organization => {
-    //     if (organization != null){
-    //         await knex("user_organization").insert({
-    //             survey_number: maxSurveyNumber,
-    //             organization_number: organization
-    //         });
-    //     }
-    // });
     for (const organization of aOrganizationType){
         if (organization != null){
             await knex("user_organization").insert({
