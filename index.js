@@ -198,6 +198,7 @@ app.post("/addRecord", async (req, res) => {
     
     // insert the survey information to the "user" table
     await knex("user").insert({
+        survey_number: maxSurveyNumber,
         location: "Provo",
         timestamp: formattedTimestamp,
         age: req.body.age,
