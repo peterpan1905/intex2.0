@@ -16,7 +16,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-app.use(session({ secret: 'BananaPancakes', resave: true, saveUninitialized: true }));
+app.use(session({ secret: 'BananaPancakes', resave: false, saveUninitialized: true }));
 app.use(express.static('public'));
 
 // Connect to postgres database
@@ -198,7 +198,6 @@ app.post("/addRecord", async (req, res) => {
     
     // insert the survey information to the "user" table
     await knex("user").insert({
-        survey_number: maxSurveyNumber,
         location: "Provo",
         timestamp: formattedTimestamp,
         age: req.body.age,
@@ -210,25 +209,41 @@ app.post("/addRecord", async (req, res) => {
 
     // insert the survey information to the "user_platform" table to keep track of all the platforms a user selected as the ones they use
     let aPlatformName = req.body.platformName;
-    aPlatformName.forEach(async platform => {
-        if (platform != null){
-                await knex("user_platform").insert({
-                    survey_number: maxSurveyNumber,
-                    platform_number: platform
+    // aPlatformName.forEach(async platform => {
+    //     if (platform != null){
+    //             await knex("user_platform").insert({
+    //                 survey_number: maxSurveyNumber,
+    //                 platform_number: platform
+    //         });
+    //     }
+    // });
+    for (const platform of aPlatformName) {
+        if (platform != null) {
+            await knex("user_platform").insert({
+                survey_number: maxSurveyNumber,
+                platform_number: platform
             });
         }
-    });
+    }
 
     // insert the survey information to the "user_organization" table to keep track of all the organizations a user selects as being affiliated with
     let aOrganizationType = req.body.organizationType;
-    aOrganizationType.forEach(async organization => {
+    // aOrganizationType.forEach(async organization => {
+    //     if (organization != null){
+    //         await knex("user_organization").insert({
+    //             survey_number: maxSurveyNumber,
+    //             organization_number: organization
+    //         });
+    //     }
+    // });
+    for (const organization of aOrganizationType){
         if (organization != null){
             await knex("user_organization").insert({
                 survey_number: maxSurveyNumber,
                 organization_number: organization
-            });
+            })
         }
-    });
+    }
     res.render("survey", {loggedIn: req.session.loggedIn})
 });
 
