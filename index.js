@@ -198,13 +198,13 @@ app.post("/addRecord", async (req, res) => {
     
     // insert the survey information to the "user" table
     await knex("user").insert({
+        survey_number: maxSurveyNumber,
         location: "Provo",
         timestamp: formattedTimestamp,
         age: req.body.age,
         gender: req.body.gender,
         relationship_status: req.body.relationshipStatus,
-        occupation_status: req.body.occupation,
-        
+        occupation_status: req.body.occupation,    
     });
 
     // insert the survey information to the "user_platform" table to keep track of all the platforms a user selected as the ones they use
