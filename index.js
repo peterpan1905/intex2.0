@@ -204,20 +204,11 @@ app.post("/addRecord", async (req, res) => {
         age: req.body.age,
         gender: req.body.gender,
         relationship_status: req.body.relationshipStatus,
-        occupation_status: req.body.occupation,
-        
+        occupation_status: req.body.occupation,    
     });
 
     // insert the survey information to the "user_platform" table to keep track of all the platforms a user selected as the ones they use
     let aPlatformName = req.body.platformName;
-    // aPlatformName.forEach(async platform => {
-    //     if (platform != null){
-    //             await knex("user_platform").insert({
-    //                 survey_number: maxSurveyNumber,
-    //                 platform_number: platform
-    //         });
-    //     }
-    // });
     for (const platform of aPlatformName) {
         if (platform != null) {
             await knex("user_platform").insert({
@@ -229,14 +220,6 @@ app.post("/addRecord", async (req, res) => {
 
     // insert the survey information to the "user_organization" table to keep track of all the organizations a user selects as being affiliated with
     let aOrganizationType = req.body.organizationType;
-    // aOrganizationType.forEach(async organization => {
-    //     if (organization != null){
-    //         await knex("user_organization").insert({
-    //             survey_number: maxSurveyNumber,
-    //             organization_number: organization
-    //         });
-    //     }
-    // });
     for (const organization of aOrganizationType){
         if (organization != null){
             await knex("user_organization").insert({
@@ -336,34 +319,62 @@ app.post("/updateuser", (req, res) => {
   });
 
 // route to render data.ejs with a table of all the surveys submitted
-app.get("/data", checkLoggedIn, (req, res) => {
-    knex.select().from("user as u").join('survey as s', 'u.survey_number', '=', 's.survey_number')
-    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
-    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
-    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
-    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number').then( survey => {
-        res.render("data", { mysurvey : survey, loggedIn: req.session.loggedIn})})
+app.get("/data", checkLoggedIn, async (req, res) => {
+    try {
+        // Fetch all survey data
+        const surveyData = await knex.select().from("user as u")
+            .join('survey as s', 'u.survey_number', '=', 's.survey_number')
+            .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+            .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+            .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+            .join('organization as o', 'uo.organization_number', '=', 'o.organization_number');
+
+        // Fetch distinct survey numbers
+        const distinctSurveyNumbers = await knex('survey').distinct('survey_number').orderBy('survey_number');
+
+        // Extract the unique survey numbers from the result
+        const dropdownOptions = distinctSurveyNumbers.map(item => item.survey_number);
+
+        // Render the data.ejs template with the survey data and dropdown options
+        res.render("data", {
+            mysurvey: surveyData,
+            loggedIn: req.session.loggedIn,
+            dropdownOptions: dropdownOptions
+        });
+    } catch (error) {
+        console.error('Error fetching survey data:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 // route to show only the selected survey results
-app.get("/datafiltered", (req, res) => {
-    let surveynum = req.query.surveySelect;
+app.get("/datafiltered", async (req, res) => {
+    try {
+        const surveynum = req.query.surveySelect;
 
-    knex.select()
-    .from("user as u")
-    .join('survey as s', 'u.survey_number', '=', 's.survey_number')
-    .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
-    .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
-    .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
-    .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
-    .where("u.survey_number", '=', surveynum)
-    .then(survey => {
-    res.render("data", { mysurvey: survey, loggedIn: req.session.loggedIn });
-    })
-    .catch(error => {
-    console.error('Error executing the query:', error);
-    res.status(500).send('Internal Server Error');
-    });
+        // Fetch all survey data
+        const surveyData = await knex.select().from("user as u")
+            .join('survey as s', 'u.survey_number', '=', 's.survey_number')
+            .join('user_platform as up', 'u.survey_number', '=', 'up.survey_number')
+            .join('platform as p', 'up.platform_number', '=', 'p.platform_number')
+            .join('user_organization as uo', 'u.survey_number', '=', 'uo.survey_number')
+            .join('organization as o', 'uo.organization_number', '=', 'o.organization_number')
+            .where("u.survey_number", '=', surveynum);
+
+        // Fetch distinct survey numbers (for dropdown)
+        const distinctSurveyNumbers = await knex('survey').distinct('survey_number').orderBy('survey_number');
+        const dropdownOptions = distinctSurveyNumbers.map(item => item.survey_number);
+
+        // Render the data.ejs template with the filtered survey data and dropdown options
+        res.render("data", {
+            mysurvey: surveyData,
+            loggedIn: req.session.loggedIn,
+            dropdownOptions: dropdownOptions
+        });
+    } catch (error) {
+        console.error('Error executing the query:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 app.listen(port, () => console.log("Server is running"));
