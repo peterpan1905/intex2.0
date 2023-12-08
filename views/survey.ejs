@@ -118,12 +118,7 @@
         <form action="/addRecord" method="post" id="surveyForm" onsubmit="return validateForm()">
           <label for="age">1. Select your age: </label>
           <br>
-          <select id="age" name="age" required>
-            <option selected disabled></option>
-            <% for (let count = 13; count <= 100; count++) { %>
-              <option value="<%= count %>"><%= count %></option>
-            <% } %>
-          </select>
+          <input type="number" id="age" name="age" min="13" max="123" required>
           <br><br>
           <label for="gender">2. Select your gender: </label>
           <br>
